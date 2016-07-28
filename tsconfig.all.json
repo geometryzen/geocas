@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "target": "ES5",
+        "outDir": "test/system",
+        "noImplicitAny": false,
+        "noLib": false,
+        "removeComments": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "moduleResolution": "classic",
+        "sourceMap": false,
+        "inlineSourceMap": false,
+        "inlineSources": false
+    },
+    "files": [
+        "src/geocas/checks/isNull.spec.ts",
+        "src/geocas/math/Algebra.spec.ts",
+        "typings/jasmine/jasmine.d.ts"
+    ]
+}
