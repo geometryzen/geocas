@@ -708,13 +708,16 @@ export class ReverseExpr extends Expr {
         super(inner.env, 'ReverseExpr');
     }
     isChanged(): boolean {
-        return this.dirty;
+        return this.dirty || this.inner.isChanged();
     }
     copy(dirty: boolean): ReverseExpr {
         return new ReverseExpr(this.inner, dirty);
     }
     reset(): ReverseExpr {
-        return new ReverseExpr(this.inner, false);
+        return new ReverseExpr(this.inner.reset(), false);
+    }
+    simplify(): Expr {
+        return new ReverseExpr(this.inner.simplify());
     }
     toPrefix() {
         return `reverse(${this.inner})`;
@@ -729,13 +732,16 @@ export class InverseExpr extends Expr {
         super(inner.env, 'InverseExpr');
     }
     isChanged(): boolean {
-        return this.dirty;
+        return this.dirty || this.inner.isChanged();
     }
     copy(dirty: boolean): InverseExpr {
         return new InverseExpr(this.inner, dirty);
     }
     reset(): InverseExpr {
-        return new InverseExpr(this.inner, false);
+        return new InverseExpr(this.inner.reset(), false);
+    }
+    simplify(): Expr {
+        return new InverseExpr(this.inner.simplify());
     }
     toPrefix() {
         return `inverse(${this.inner})`;
@@ -750,13 +756,16 @@ export class NegExpr extends Expr {
         super(inner.env, 'NegExpr');
     }
     isChanged(): boolean {
-        return this.dirty;
+        return this.dirty || this.inner.isChanged();
     }
     copy(dirty: boolean): NegExpr {
         return new NegExpr(this.inner, dirty);
     }
     reset(): NegExpr {
-        return new NegExpr(this.inner, false);
+        return new NegExpr(this.inner.reset(), false);
+    }
+    simplify(): Expr {
+        return new NegExpr(this.inner.simplify());
     }
     toPrefix() {
         return `neg(${this.inner})`;
@@ -771,13 +780,16 @@ export class PosExpr extends Expr {
         super(inner.env, 'PosExpr');
     }
     isChanged(): boolean {
-        return this.dirty;
+        return this.dirty || this.inner.isChanged();
     }
     copy(dirty: boolean): PosExpr {
         return new PosExpr(this.inner, dirty);
     }
     reset(): PosExpr {
-        return new PosExpr(this.inner, false);
+        return new PosExpr(this.inner.reset(), false);
+    }
+    simplify(): Expr {
+        return new PosExpr(this.inner.simplify());
     }
     toPrefix() {
         return `pos(${this.inner})`;

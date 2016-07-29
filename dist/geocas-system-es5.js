@@ -712,13 +712,16 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
                     this.dirty = dirty;
                 }
                 ReverseExpr.prototype.isChanged = function () {
-                    return this.dirty;
+                    return this.dirty || this.inner.isChanged();
                 };
                 ReverseExpr.prototype.copy = function (dirty) {
                     return new ReverseExpr(this.inner, dirty);
                 };
                 ReverseExpr.prototype.reset = function () {
-                    return new ReverseExpr(this.inner, false);
+                    return new ReverseExpr(this.inner.reset(), false);
+                };
+                ReverseExpr.prototype.simplify = function () {
+                    return new ReverseExpr(this.inner.simplify());
                 };
                 ReverseExpr.prototype.toPrefix = function () {
                     return "reverse(" + this.inner + ")";
@@ -740,13 +743,16 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
                     this.dirty = dirty;
                 }
                 InverseExpr.prototype.isChanged = function () {
-                    return this.dirty;
+                    return this.dirty || this.inner.isChanged();
                 };
                 InverseExpr.prototype.copy = function (dirty) {
                     return new InverseExpr(this.inner, dirty);
                 };
                 InverseExpr.prototype.reset = function () {
-                    return new InverseExpr(this.inner, false);
+                    return new InverseExpr(this.inner.reset(), false);
+                };
+                InverseExpr.prototype.simplify = function () {
+                    return new InverseExpr(this.inner.simplify());
                 };
                 InverseExpr.prototype.toPrefix = function () {
                     return "inverse(" + this.inner + ")";
@@ -768,13 +774,16 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
                     this.dirty = dirty;
                 }
                 NegExpr.prototype.isChanged = function () {
-                    return this.dirty;
+                    return this.dirty || this.inner.isChanged();
                 };
                 NegExpr.prototype.copy = function (dirty) {
                     return new NegExpr(this.inner, dirty);
                 };
                 NegExpr.prototype.reset = function () {
-                    return new NegExpr(this.inner, false);
+                    return new NegExpr(this.inner.reset(), false);
+                };
+                NegExpr.prototype.simplify = function () {
+                    return new NegExpr(this.inner.simplify());
                 };
                 NegExpr.prototype.toPrefix = function () {
                     return "neg(" + this.inner + ")";
@@ -796,13 +805,16 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
                     this.dirty = dirty;
                 }
                 PosExpr.prototype.isChanged = function () {
-                    return this.dirty;
+                    return this.dirty || this.inner.isChanged();
                 };
                 PosExpr.prototype.copy = function (dirty) {
                     return new PosExpr(this.inner, dirty);
                 };
                 PosExpr.prototype.reset = function () {
-                    return new PosExpr(this.inner, false);
+                    return new PosExpr(this.inner.reset(), false);
+                };
+                PosExpr.prototype.simplify = function () {
+                    return new PosExpr(this.inner.simplify());
                 };
                 PosExpr.prototype.toPrefix = function () {
                     return "pos(" + this.inner + ")";

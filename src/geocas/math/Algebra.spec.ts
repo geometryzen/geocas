@@ -217,6 +217,7 @@ describe("Algebra", function() {
                 const expr = e1.__tilde__();
                 expect(expr.toPrefix()).toBe("reverse(e1)");
                 expect(expr.toString()).toBe("~e1");
+                expect(expr.simplify().toString()).toBe("~e1");
 
                 expect(expr.reset().toString()).toBe("~e1");
                 expect(expr.reset().isChanged()).toBeFalsy();
@@ -233,6 +234,7 @@ describe("Algebra", function() {
                 const expr = e1.__bang__();
                 expect(expr.toPrefix()).toBe("inverse(e1)");
                 expect(expr.toString()).toBe("!e1");
+                expect(expr.simplify().toString()).toBe("!e1");
 
                 expect(expr.reset().toString()).toBe("!e1");
                 expect(expr.reset().isChanged()).toBeFalsy();
@@ -249,6 +251,7 @@ describe("Algebra", function() {
                 const expr = e1.__neg__();
                 expect(expr.toPrefix()).toBe("neg(e1)");
                 expect(expr.toString()).toBe("-e1");
+                expect(expr.simplify().toString()).toBe("-e1");
 
                 expect(expr.reset().toString()).toBe("-e1");
                 expect(expr.reset().isChanged()).toBeFalsy();
@@ -265,6 +268,7 @@ describe("Algebra", function() {
                 const expr = e1.__pos__();
                 expect(expr.toPrefix()).toBe("pos(e1)");
                 expect(expr.toString()).toBe("+e1");
+                expect(expr.simplify().toString()).toBe("+e1");
 
                 expect(expr.reset().toString()).toBe("+e1");
                 expect(expr.reset().isChanged()).toBeFalsy();
