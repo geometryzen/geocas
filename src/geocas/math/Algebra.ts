@@ -704,8 +704,17 @@ export class WedgeExpr extends BinaryExpr {
 }
 
 export class ReverseExpr extends Expr {
-    constructor(public inner: Expr) {
+    constructor(public inner: Expr, public dirty = false) {
         super(inner.env, 'ReverseExpr');
+    }
+    isChanged(): boolean {
+        return this.dirty;
+    }
+    copy(dirty: boolean): ReverseExpr {
+        return new ReverseExpr(this.inner, dirty);
+    }
+    reset(): ReverseExpr {
+        return new ReverseExpr(this.inner, false);
     }
     toPrefix() {
         return `reverse(${this.inner})`;
@@ -716,8 +725,17 @@ export class ReverseExpr extends Expr {
 }
 
 export class InverseExpr extends Expr {
-    constructor(public inner: Expr) {
+    constructor(public inner: Expr, public dirty = false) {
         super(inner.env, 'InverseExpr');
+    }
+    isChanged(): boolean {
+        return this.dirty;
+    }
+    copy(dirty: boolean): InverseExpr {
+        return new InverseExpr(this.inner, dirty);
+    }
+    reset(): InverseExpr {
+        return new InverseExpr(this.inner, false);
     }
     toPrefix() {
         return `inverse(${this.inner})`;
@@ -728,8 +746,17 @@ export class InverseExpr extends Expr {
 }
 
 export class NegExpr extends Expr {
-    constructor(public inner: Expr) {
+    constructor(public inner: Expr, public dirty = false) {
         super(inner.env, 'NegExpr');
+    }
+    isChanged(): boolean {
+        return this.dirty;
+    }
+    copy(dirty: boolean): NegExpr {
+        return new NegExpr(this.inner, dirty);
+    }
+    reset(): NegExpr {
+        return new NegExpr(this.inner, false);
     }
     toPrefix() {
         return `neg(${this.inner})`;
@@ -740,8 +767,17 @@ export class NegExpr extends Expr {
 }
 
 export class PosExpr extends Expr {
-    constructor(public inner: Expr) {
+    constructor(public inner: Expr, public dirty = false) {
         super(inner.env, 'PosExpr');
+    }
+    isChanged(): boolean {
+        return this.dirty;
+    }
+    copy(dirty: boolean): PosExpr {
+        return new PosExpr(this.inner, dirty);
+    }
+    reset(): PosExpr {
+        return new PosExpr(this.inner, false);
     }
     toPrefix() {
         return `pos(${this.inner})`;

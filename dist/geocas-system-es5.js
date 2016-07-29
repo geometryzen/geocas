@@ -703,10 +703,23 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
             exports_1("WedgeExpr", WedgeExpr);
             ReverseExpr = function (_super) {
                 __extends(ReverseExpr, _super);
-                function ReverseExpr(inner) {
+                function ReverseExpr(inner, dirty) {
+                    if (dirty === void 0) {
+                        dirty = false;
+                    }
                     _super.call(this, inner.env, 'ReverseExpr');
                     this.inner = inner;
+                    this.dirty = dirty;
                 }
+                ReverseExpr.prototype.isChanged = function () {
+                    return this.dirty;
+                };
+                ReverseExpr.prototype.copy = function (dirty) {
+                    return new ReverseExpr(this.inner, dirty);
+                };
+                ReverseExpr.prototype.reset = function () {
+                    return new ReverseExpr(this.inner, false);
+                };
                 ReverseExpr.prototype.toPrefix = function () {
                     return "reverse(" + this.inner + ")";
                 };
@@ -718,10 +731,23 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
             exports_1("ReverseExpr", ReverseExpr);
             InverseExpr = function (_super) {
                 __extends(InverseExpr, _super);
-                function InverseExpr(inner) {
+                function InverseExpr(inner, dirty) {
+                    if (dirty === void 0) {
+                        dirty = false;
+                    }
                     _super.call(this, inner.env, 'InverseExpr');
                     this.inner = inner;
+                    this.dirty = dirty;
                 }
+                InverseExpr.prototype.isChanged = function () {
+                    return this.dirty;
+                };
+                InverseExpr.prototype.copy = function (dirty) {
+                    return new InverseExpr(this.inner, dirty);
+                };
+                InverseExpr.prototype.reset = function () {
+                    return new InverseExpr(this.inner, false);
+                };
                 InverseExpr.prototype.toPrefix = function () {
                     return "inverse(" + this.inner + ")";
                 };
@@ -733,10 +759,23 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
             exports_1("InverseExpr", InverseExpr);
             NegExpr = function (_super) {
                 __extends(NegExpr, _super);
-                function NegExpr(inner) {
+                function NegExpr(inner, dirty) {
+                    if (dirty === void 0) {
+                        dirty = false;
+                    }
                     _super.call(this, inner.env, 'NegExpr');
                     this.inner = inner;
+                    this.dirty = dirty;
                 }
+                NegExpr.prototype.isChanged = function () {
+                    return this.dirty;
+                };
+                NegExpr.prototype.copy = function (dirty) {
+                    return new NegExpr(this.inner, dirty);
+                };
+                NegExpr.prototype.reset = function () {
+                    return new NegExpr(this.inner, false);
+                };
                 NegExpr.prototype.toPrefix = function () {
                     return "neg(" + this.inner + ")";
                 };
@@ -748,10 +787,23 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
             exports_1("NegExpr", NegExpr);
             PosExpr = function (_super) {
                 __extends(PosExpr, _super);
-                function PosExpr(inner) {
+                function PosExpr(inner, dirty) {
+                    if (dirty === void 0) {
+                        dirty = false;
+                    }
                     _super.call(this, inner.env, 'PosExpr');
                     this.inner = inner;
+                    this.dirty = dirty;
                 }
+                PosExpr.prototype.isChanged = function () {
+                    return this.dirty;
+                };
+                PosExpr.prototype.copy = function (dirty) {
+                    return new PosExpr(this.inner, dirty);
+                };
+                PosExpr.prototype.reset = function () {
+                    return new PosExpr(this.inner, false);
+                };
                 PosExpr.prototype.toPrefix = function () {
                     return "pos(" + this.inner + ")";
                 };

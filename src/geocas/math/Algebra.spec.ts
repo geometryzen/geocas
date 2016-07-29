@@ -217,6 +217,15 @@ describe("Algebra", function() {
                 const expr = e1.__tilde__();
                 expect(expr.toPrefix()).toBe("reverse(e1)");
                 expect(expr.toString()).toBe("~e1");
+
+                expect(expr.reset().toString()).toBe("~e1");
+                expect(expr.reset().isChanged()).toBeFalsy();
+
+                expect(expr.copy(false).toString()).toBe("~e1");
+                expect(expr.copy(false).isChanged()).toBeFalsy();
+
+                expect(expr.copy(true).toString()).toBe("~e1");
+                expect(expr.copy(true).isChanged()).toBeTruthy();
             });
         });
         describe("__bang__", function() {
@@ -224,6 +233,15 @@ describe("Algebra", function() {
                 const expr = e1.__bang__();
                 expect(expr.toPrefix()).toBe("inverse(e1)");
                 expect(expr.toString()).toBe("!e1");
+
+                expect(expr.reset().toString()).toBe("!e1");
+                expect(expr.reset().isChanged()).toBeFalsy();
+
+                expect(expr.copy(false).toString()).toBe("!e1");
+                expect(expr.copy(false).isChanged()).toBeFalsy();
+
+                expect(expr.copy(true).toString()).toBe("!e1");
+                expect(expr.copy(true).isChanged()).toBeTruthy();
             });
         });
         describe("__neg__", function() {
@@ -231,6 +249,15 @@ describe("Algebra", function() {
                 const expr = e1.__neg__();
                 expect(expr.toPrefix()).toBe("neg(e1)");
                 expect(expr.toString()).toBe("-e1");
+
+                expect(expr.reset().toString()).toBe("-e1");
+                expect(expr.reset().isChanged()).toBeFalsy();
+
+                expect(expr.copy(false).toString()).toBe("-e1");
+                expect(expr.copy(false).isChanged()).toBeFalsy();
+
+                expect(expr.copy(true).toString()).toBe("-e1");
+                expect(expr.copy(true).isChanged()).toBeTruthy();
             });
         });
         describe("__pos__", function() {
@@ -238,6 +265,15 @@ describe("Algebra", function() {
                 const expr = e1.__pos__();
                 expect(expr.toPrefix()).toBe("pos(e1)");
                 expect(expr.toString()).toBe("+e1");
+
+                expect(expr.reset().toString()).toBe("+e1");
+                expect(expr.reset().isChanged()).toBeFalsy();
+
+                expect(expr.copy(false).toString()).toBe("+e1");
+                expect(expr.copy(false).isChanged()).toBeFalsy();
+
+                expect(expr.copy(true).toString()).toBe("+e1");
+                expect(expr.copy(true).isChanged()).toBeTruthy();
             });
         });
         it("BasisBladeExpr", function() {
