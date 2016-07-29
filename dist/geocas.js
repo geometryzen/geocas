@@ -455,8 +455,8 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
         return result;
     };
     var Expr = (function () {
-        function Expr(g, type) {
-            this.g = g;
+        function Expr(env, type) {
+            this.env = env;
             this.type = type;
         }
         Expr.prototype.isChanged = function () {
@@ -482,7 +482,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 return new AddExpr(this, rhs);
             }
             else if (typeof rhs === 'number') {
-                return new AddExpr(this, new ScalarExpr(this.g, rhs));
+                return new AddExpr(this, new ScalarExpr(this.env, rhs));
             }
             else {
                 return void 0;
@@ -493,7 +493,29 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 return new AddExpr(lhs, this);
             }
             else if (typeof lhs === 'number') {
-                return new AddExpr(new ScalarExpr(this.g, lhs), this);
+                return new AddExpr(new ScalarExpr(this.env, lhs), this);
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__sub__ = function (rhs) {
+            if (rhs instanceof Expr) {
+                return new SubExpr(this, rhs);
+            }
+            else if (typeof rhs === 'number') {
+                return new SubExpr(this, new ScalarExpr(this.env, rhs));
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__rsub__ = function (lhs) {
+            if (lhs instanceof Expr) {
+                return new SubExpr(lhs, this);
+            }
+            else if (typeof lhs === 'number') {
+                return new SubExpr(new ScalarExpr(this.env, lhs), this);
             }
             else {
                 return void 0;
@@ -501,10 +523,10 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
         };
         Expr.prototype.__mul__ = function (rhs) {
             if (rhs instanceof Expr) {
-                return new MulExpr(this, rhs);
+                return new MultiplyExpr(this, rhs);
             }
             else if (typeof rhs === 'number') {
-                return new MulExpr(this, new ScalarExpr(this.g, rhs));
+                return new MultiplyExpr(this, new ScalarExpr(this.env, rhs));
             }
             else {
                 return void 0;
@@ -512,10 +534,32 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
         };
         Expr.prototype.__rmul__ = function (lhs) {
             if (lhs instanceof Expr) {
-                return new MulExpr(lhs, this);
+                return new MultiplyExpr(lhs, this);
             }
             else if (typeof lhs === 'number') {
-                return new MulExpr(new ScalarExpr(this.g, lhs), this);
+                return new MultiplyExpr(new ScalarExpr(this.env, lhs), this);
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__div__ = function (rhs) {
+            if (rhs instanceof Expr) {
+                return new DivideExpr(this, rhs);
+            }
+            else if (typeof rhs === 'number') {
+                return new DivideExpr(this, new ScalarExpr(this.env, rhs));
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__rdiv__ = function (lhs) {
+            if (lhs instanceof Expr) {
+                return new DivideExpr(lhs, this);
+            }
+            else if (typeof lhs === 'number') {
+                return new DivideExpr(new ScalarExpr(this.env, lhs), this);
             }
             else {
                 return void 0;
@@ -526,7 +570,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 return new VBarExpr(this, rhs);
             }
             else if (typeof rhs === 'number') {
-                return new VBarExpr(this, new ScalarExpr(this.g, rhs));
+                return new VBarExpr(this, new ScalarExpr(this.env, rhs));
             }
             else {
                 return void 0;
@@ -537,7 +581,51 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 return new VBarExpr(lhs, this);
             }
             else if (typeof lhs === 'number') {
-                return new VBarExpr(new ScalarExpr(this.g, lhs), this);
+                return new VBarExpr(new ScalarExpr(this.env, lhs), this);
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__lshift__ = function (rhs) {
+            if (rhs instanceof Expr) {
+                return new LContractExpr(this, rhs);
+            }
+            else if (typeof rhs === 'number') {
+                return new LContractExpr(this, new ScalarExpr(this.env, rhs));
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__rlshift__ = function (lhs) {
+            if (lhs instanceof Expr) {
+                return new LContractExpr(lhs, this);
+            }
+            else if (typeof lhs === 'number') {
+                return new LContractExpr(new ScalarExpr(this.env, lhs), this);
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__rshift__ = function (rhs) {
+            if (rhs instanceof Expr) {
+                return new RContractExpr(this, rhs);
+            }
+            else if (typeof rhs === 'number') {
+                return new RContractExpr(this, new ScalarExpr(this.env, rhs));
+            }
+            else {
+                return void 0;
+            }
+        };
+        Expr.prototype.__rrshift__ = function (lhs) {
+            if (lhs instanceof Expr) {
+                return new RContractExpr(lhs, this);
+            }
+            else if (typeof lhs === 'number') {
+                return new RContractExpr(new ScalarExpr(this.env, lhs), this);
             }
             else {
                 return void 0;
@@ -548,7 +636,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 return new WedgeExpr(this, rhs);
             }
             else if (typeof rhs === 'number') {
-                return new WedgeExpr(this, new ScalarExpr(this.g, rhs));
+                return new WedgeExpr(this, new ScalarExpr(this.env, rhs));
             }
             else {
                 return void 0;
@@ -556,10 +644,10 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
         };
         Expr.prototype.__rwedge__ = function (lhs) {
             if (lhs instanceof Expr) {
-                return new VBarExpr(lhs, this);
+                return new WedgeExpr(lhs, this);
             }
             else if (typeof lhs === 'number') {
-                return new VBarExpr(new ScalarExpr(this.g, lhs), this);
+                return new WedgeExpr(new ScalarExpr(this.env, lhs), this);
             }
             else {
                 return void 0;
@@ -571,7 +659,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
     var BinaryExpr = (function (_super) {
         __extends(BinaryExpr, _super);
         function BinaryExpr(lhs, rhs, type) {
-            _super.call(this, lhs.g, type);
+            _super.call(this, lhs.env, type);
             this.lhs = lhs;
             this.rhs = rhs;
             if (!(lhs instanceof Expr)) {
@@ -606,13 +694,13 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             if (b instanceof ScalarExpr && typeof b.value === 'number' && b.value === 0) {
                 return a.copy(true);
             }
-            else if (a instanceof MulExpr && b instanceof MulExpr) {
+            else if (a instanceof MultiplyExpr && b instanceof MultiplyExpr) {
                 if (a.lhs instanceof ScalarExpr && b.lhs instanceof ScalarExpr && a.rhs === b.rhs) {
                     var sa = a.lhs;
                     var sb = b.lhs;
                     if (typeof sa.value === 'number' && typeof sb.value === 'number') {
-                        var s = new ScalarExpr(this.g, sa.value + sb.value);
-                        return new MulExpr(s, a.rhs, true);
+                        var s = new ScalarExpr(this.env, sa.value + sb.value);
+                        return new MultiplyExpr(s, a.rhs, true);
                     }
                     else {
                         return new AddExpr(a, b);
@@ -624,7 +712,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             }
             else if (a instanceof ScalarExpr && b instanceof ScalarExpr) {
                 if (typeof a.value === 'number' && typeof b.value === 'number') {
-                    return new ScalarExpr(this.g, a.value + b.value, true);
+                    return new ScalarExpr(this.env, a.value + b.value, true);
                 }
                 else {
                     return new AddExpr(a, b);
@@ -635,7 +723,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             }
         };
         AddExpr.prototype.toPrefix = function () {
-            return "+(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
+            return "add(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
         };
         AddExpr.prototype.toString = function () {
             return this.lhs + " + " + this.rhs;
@@ -643,25 +731,75 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
         return AddExpr;
     }(BinaryExpr));
     exports.AddExpr = AddExpr;
-    var MulExpr = (function (_super) {
-        __extends(MulExpr, _super);
-        function MulExpr(lhs, rhs, dirty) {
+    var SubExpr = (function (_super) {
+        __extends(SubExpr, _super);
+        function SubExpr(lhs, rhs, dirty) {
+            if (dirty === void 0) { dirty = false; }
+            _super.call(this, lhs, rhs, 'SubExpr');
+            this.dirty = dirty;
+        }
+        SubExpr.prototype.isChanged = function () {
+            return this.dirty || this.lhs.isChanged() || this.rhs.isChanged();
+        };
+        SubExpr.prototype.copy = function (dirty) {
+            return new SubExpr(this.lhs, this.rhs, dirty);
+        };
+        SubExpr.prototype.reset = function () {
+            return new SubExpr(this.lhs.reset(), this.rhs.reset());
+        };
+        SubExpr.prototype.simplify = function () {
+            var a = this.lhs.simplify();
+            var b = this.rhs.simplify();
+            return new SubExpr(a, b);
+        };
+        SubExpr.prototype.toPrefix = function () {
+            return "sub(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
+        };
+        SubExpr.prototype.toString = function () {
+            return this.lhs + " - " + this.rhs;
+        };
+        return SubExpr;
+    }(BinaryExpr));
+    exports.SubExpr = SubExpr;
+    var MultiplyExpr = (function (_super) {
+        __extends(MultiplyExpr, _super);
+        function MultiplyExpr(lhs, rhs, dirty) {
             if (dirty === void 0) { dirty = false; }
             _super.call(this, lhs, rhs, 'MultiplyExpr');
             this.dirty = dirty;
         }
-        MulExpr.prototype.isChanged = function () {
+        MultiplyExpr.prototype.isChanged = function () {
             return this.dirty || this.lhs.isChanged() || this.rhs.isChanged();
         };
-        MulExpr.prototype.copy = function (dirty) {
-            return new MulExpr(this.lhs, this.rhs, dirty);
+        MultiplyExpr.prototype.copy = function (dirty) {
+            return new MultiplyExpr(this.lhs, this.rhs, dirty);
         };
-        MulExpr.prototype.reset = function () {
-            return new MulExpr(this.lhs.reset(), this.rhs.reset());
+        MultiplyExpr.prototype.reset = function () {
+            return new MultiplyExpr(this.lhs.reset(), this.rhs.reset());
         };
-        MulExpr.prototype.simplify = function () {
+        MultiplyExpr.prototype.simplify = function () {
             var a = this.lhs.simplify();
             var b = this.rhs.simplify();
+            if (a instanceof MultiplyExpr) {
+                var aL = a.lhs;
+                var aR = a.rhs;
+                if (aL instanceof ScalarExpr) {
+                    return new MultiplyExpr(aL, new MultiplyExpr(aR, b), true);
+                }
+                else {
+                    return new MultiplyExpr(a, b);
+                }
+            }
+            else if (b instanceof MultiplyExpr) {
+                var bL = b.lhs;
+                var bR = b.rhs;
+                if (bL instanceof ScalarExpr) {
+                    return new MultiplyExpr(bL, new MultiplyExpr(a, bR), true);
+                }
+                else {
+                    return new MultiplyExpr(a, b);
+                }
+            }
             if (a instanceof ScalarExpr) {
                 if (typeof a.value === 'number' && a.value === 0) {
                     return a.copy(true);
@@ -674,68 +812,158 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                         return b;
                     }
                     else if (typeof a.value === 'number' && typeof b.value === 'number') {
-                        return new ScalarExpr(this.g, a.value * b.value, true);
+                        return new ScalarExpr(this.env, a.value * b.value, true);
                     }
                     else if (typeof a.value !== 'number' && typeof b.value === 'number') {
-                        return new MulExpr(b, a, true);
+                        return new MultiplyExpr(b, a, true);
                     }
                     else {
-                        return new MulExpr(a, b);
+                        return new MultiplyExpr(a, b);
                     }
                 }
                 else {
-                    return new MulExpr(a, b);
+                    return new MultiplyExpr(a, b);
                 }
             }
             else if (a instanceof BasisBladeExpr) {
-                if (b instanceof MulExpr) {
+                if (b instanceof MultiplyExpr) {
                     var bL = b.lhs;
                     var bR = b.rhs;
                     if (bL instanceof BasisBladeExpr) {
                         if (a.vectors[0] === bL.vectors[0]) {
-                            return new MulExpr(new MulExpr(a, bL), bR, true);
+                            return new MultiplyExpr(new MultiplyExpr(a, bL), bR, true);
                         }
                         else {
-                            return new MulExpr(a, b);
+                            return new MultiplyExpr(a, b);
                         }
                     }
                     else {
-                        return new MulExpr(a, b);
+                        return new MultiplyExpr(a, b);
                     }
                 }
                 else if (b instanceof BasisBladeExpr) {
                     if (a === b) {
-                        return this.g(a, b);
+                        return new VBarExpr(a, b, true);
                     }
                     else {
-                        return new MulExpr(a, b);
+                        return new MultiplyExpr(a, b);
                     }
                 }
                 else if (b instanceof ScalarExpr) {
-                    return new MulExpr(b, a, true);
+                    return new MultiplyExpr(b, a, true);
                 }
                 else {
-                    return new MulExpr(a, b);
+                    return new MultiplyExpr(a, b);
                 }
             }
             else {
-                return new MulExpr(a, b);
+                return new MultiplyExpr(a, b);
             }
         };
-        MulExpr.prototype.toPrefix = function () {
-            return "*(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
+        MultiplyExpr.prototype.toPrefix = function () {
+            return "mul(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
         };
-        MulExpr.prototype.toString = function () {
+        MultiplyExpr.prototype.toString = function () {
             return this.lhs + " * " + this.rhs;
         };
-        return MulExpr;
+        return MultiplyExpr;
     }(BinaryExpr));
-    exports.MulExpr = MulExpr;
+    exports.MultiplyExpr = MultiplyExpr;
+    var DivideExpr = (function (_super) {
+        __extends(DivideExpr, _super);
+        function DivideExpr(lhs, rhs, dirty) {
+            if (dirty === void 0) { dirty = false; }
+            _super.call(this, lhs, rhs, 'SubExpr');
+            this.dirty = dirty;
+        }
+        DivideExpr.prototype.isChanged = function () {
+            return this.dirty || this.lhs.isChanged() || this.rhs.isChanged();
+        };
+        DivideExpr.prototype.copy = function (dirty) {
+            return new DivideExpr(this.lhs, this.rhs, dirty);
+        };
+        DivideExpr.prototype.reset = function () {
+            return new DivideExpr(this.lhs.reset(), this.rhs.reset());
+        };
+        DivideExpr.prototype.simplify = function () {
+            var a = this.lhs.simplify();
+            var b = this.rhs.simplify();
+            return new DivideExpr(a, b);
+        };
+        DivideExpr.prototype.toPrefix = function () {
+            return "div(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
+        };
+        DivideExpr.prototype.toString = function () {
+            return this.lhs + " / " + this.rhs;
+        };
+        return DivideExpr;
+    }(BinaryExpr));
+    exports.DivideExpr = DivideExpr;
+    var LContractExpr = (function (_super) {
+        __extends(LContractExpr, _super);
+        function LContractExpr(lhs, rhs, dirty) {
+            if (dirty === void 0) { dirty = false; }
+            _super.call(this, lhs, rhs, 'LContractExpr');
+            this.dirty = dirty;
+        }
+        LContractExpr.prototype.isChanged = function () {
+            return this.dirty || this.lhs.isChanged() || this.rhs.isChanged();
+        };
+        LContractExpr.prototype.copy = function (dirty) {
+            return new LContractExpr(this.lhs, this.rhs, dirty);
+        };
+        LContractExpr.prototype.reset = function () {
+            return new LContractExpr(this.lhs.reset(), this.rhs.reset());
+        };
+        LContractExpr.prototype.simplify = function () {
+            var a = this.lhs.simplify();
+            var b = this.rhs.simplify();
+            return new LContractExpr(a, b);
+        };
+        LContractExpr.prototype.toPrefix = function () {
+            return "lco(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
+        };
+        LContractExpr.prototype.toString = function () {
+            return this.lhs + " << " + this.rhs;
+        };
+        return LContractExpr;
+    }(BinaryExpr));
+    exports.LContractExpr = LContractExpr;
+    var RContractExpr = (function (_super) {
+        __extends(RContractExpr, _super);
+        function RContractExpr(lhs, rhs, dirty) {
+            if (dirty === void 0) { dirty = false; }
+            _super.call(this, lhs, rhs, 'RContractExpr');
+            this.dirty = dirty;
+        }
+        RContractExpr.prototype.isChanged = function () {
+            return this.dirty || this.lhs.isChanged() || this.rhs.isChanged();
+        };
+        RContractExpr.prototype.copy = function (dirty) {
+            return new RContractExpr(this.lhs, this.rhs, dirty);
+        };
+        RContractExpr.prototype.reset = function () {
+            return new RContractExpr(this.lhs.reset(), this.rhs.reset());
+        };
+        RContractExpr.prototype.simplify = function () {
+            var a = this.lhs.simplify();
+            var b = this.rhs.simplify();
+            return new RContractExpr(a, b);
+        };
+        RContractExpr.prototype.toPrefix = function () {
+            return "rco(" + this.lhs.toPrefix() + ", " + this.rhs.toPrefix() + ")";
+        };
+        RContractExpr.prototype.toString = function () {
+            return this.lhs + " >> " + this.rhs;
+        };
+        return RContractExpr;
+    }(BinaryExpr));
+    exports.RContractExpr = RContractExpr;
     var BasisBladeExpr = (function (_super) {
         __extends(BasisBladeExpr, _super);
-        function BasisBladeExpr(g, vectors, dirty) {
+        function BasisBladeExpr(env, vectors, dirty) {
             if (dirty === void 0) { dirty = false; }
-            _super.call(this, g, 'BasisBladeExpr');
+            _super.call(this, env, 'BasisBladeExpr');
             this.vectors = vectors;
             this.dirty = dirty;
             if (!Array.isArray(vectors)) {
@@ -746,11 +974,11 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             return this.dirty;
         };
         BasisBladeExpr.prototype.copy = function (dirty) {
-            return new BasisBladeExpr(this.g, this.vectors, dirty);
+            return new BasisBladeExpr(this.env, this.vectors, dirty);
         };
         BasisBladeExpr.prototype.reset = function () {
             if (this.dirty) {
-                return new BasisBladeExpr(this.g, this.vectors, false);
+                return new BasisBladeExpr(this.env, this.vectors, false);
             }
             else {
                 return this;
@@ -760,29 +988,19 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             return this;
         };
         BasisBladeExpr.prototype.toPrefix = function () {
-            if (this.vectors.length > 0) {
-                return this.vectors.map(function (i) { return ("e" + (i + 1)); }).join(' ^ ');
-            }
-            else {
-                return "1";
-            }
+            return this.env.bladeName(this.vectors);
         };
         BasisBladeExpr.prototype.toString = function () {
-            if (this.vectors.length > 0) {
-                return this.vectors.map(function (i) { return ("e" + (i + 1)); }).join(' ^ ');
-            }
-            else {
-                return "1";
-            }
+            return this.env.bladeName(this.vectors);
         };
         return BasisBladeExpr;
     }(Expr));
     exports.BasisBladeExpr = BasisBladeExpr;
     var ScalarExpr = (function (_super) {
         __extends(ScalarExpr, _super);
-        function ScalarExpr(g, value, dirty) {
+        function ScalarExpr(env, value, dirty) {
             if (dirty === void 0) { dirty = false; }
-            _super.call(this, g, 'ScalarExpr');
+            _super.call(this, env, 'ScalarExpr');
             this.value = value;
             this.dirty = dirty;
         }
@@ -790,11 +1008,11 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             return false;
         };
         ScalarExpr.prototype.copy = function (dirty) {
-            return new ScalarExpr(this.g, this.value, dirty);
+            return new ScalarExpr(this.env, this.value, dirty);
         };
         ScalarExpr.prototype.reset = function () {
             if (this.dirty) {
-                return new ScalarExpr(this.g, this.value, false);
+                return new ScalarExpr(this.env, this.value, false);
             }
             else {
                 return this;
@@ -832,7 +1050,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             var a = this.lhs.simplify();
             var b = this.rhs.simplify();
             if (a instanceof BasisBladeExpr && b instanceof BasisBladeExpr) {
-                return this.g(a, b);
+                return this.env.g(a, b);
             }
             else if (a instanceof AddExpr && b instanceof BasisBladeExpr) {
                 var aL = a.lhs;
@@ -844,21 +1062,21 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 var bR = b.rhs;
                 return new AddExpr(new VBarExpr(a, bL), new VBarExpr(a, bR), true);
             }
-            else if (a instanceof MulExpr && b instanceof Expr) {
+            else if (a instanceof MultiplyExpr && b instanceof Expr) {
                 var aL = a.lhs;
                 var aR = a.rhs;
                 if (aL instanceof ScalarExpr && aR instanceof BasisBladeExpr) {
-                    return new MulExpr(aL, new VBarExpr(aR, b), true);
+                    return new MultiplyExpr(aL, new VBarExpr(aR, b), true);
                 }
                 else {
                     return new VBarExpr(a, b);
                 }
             }
-            else if (a instanceof BasisBladeExpr && b instanceof MulExpr) {
+            else if (a instanceof BasisBladeExpr && b instanceof MultiplyExpr) {
                 var bL = b.lhs;
                 var bR = b.rhs;
                 if (bL instanceof ScalarExpr && bR instanceof BasisBladeExpr) {
-                    return new MulExpr(bL, new VBarExpr(a, bR), true);
+                    return new MultiplyExpr(bL, new VBarExpr(a, bR), true);
                 }
                 else {
                     return new VBarExpr(a, b);
@@ -895,7 +1113,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             var b = this.rhs.simplify();
             if (a instanceof ScalarExpr) {
                 if (b instanceof ScalarExpr) {
-                    return new ScalarExpr(this.g, 0, true);
+                    return new ScalarExpr(this.env, 0, true);
                 }
                 else if (typeof a.value === 'number' && a.value === 1) {
                     return b.copy(true);
@@ -906,7 +1124,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             }
             else if (b instanceof ScalarExpr) {
                 if (a instanceof ScalarExpr) {
-                    return new ScalarExpr(this.g, 0, true);
+                    return new ScalarExpr(this.env, 0, true);
                 }
                 else if (typeof b.value === 'number' && b.value === 1) {
                     if (a instanceof BasisBladeExpr) {
@@ -923,18 +1141,18 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             else if (a instanceof BasisBladeExpr && b instanceof BasisBladeExpr) {
                 var blade = wedgeBlades(a.vectors, b.vectors);
                 if (Array.isArray(blade)) {
-                    return new BasisBladeExpr(this.g, blade, true);
+                    return new BasisBladeExpr(this.env, blade, true);
                 }
                 else {
-                    return new ScalarExpr(this.g, 0, true);
+                    return new ScalarExpr(this.env, 0, true);
                 }
             }
             else if (a instanceof BasisBladeExpr && b instanceof BasisBladeExpr) {
                 if (a === b) {
-                    return new ScalarExpr(this.g, 0, true);
+                    return new ScalarExpr(this.env, 0, true);
                 }
                 else {
-                    return new AddExpr(new MulExpr(a, b), new MulExpr(new ScalarExpr(this.g, -1), new VBarExpr(a, b)), true);
+                    return new AddExpr(new MultiplyExpr(a, b), new MultiplyExpr(new ScalarExpr(this.env, -1), new VBarExpr(a, b)), true);
                 }
             }
             else {
@@ -942,7 +1160,7 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
             }
         };
         WedgeExpr.prototype.toPrefix = function () {
-            return "^(" + this.lhs + ", " + this.rhs + ")";
+            return "ext(" + this.lhs + ", " + this.rhs + ")";
         };
         WedgeExpr.prototype.toString = function () {
             return this.lhs + " ^ " + this.rhs;
@@ -951,22 +1169,14 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
     }(BinaryExpr));
     exports.WedgeExpr = WedgeExpr;
     var Algebra = (function () {
-        function Algebra(names, g) {
-            var _this = this;
+        function Algebra(g, unused) {
             this.basis = [];
-            this.index = {};
-            this.metric = function (u, v) {
-                var i = u.vectors[0];
-                var j = v.vectors[0];
-                return new ScalarExpr(_this.metric, g[i][j]);
-            };
-            this.basis.push(new BasisBladeExpr(this.metric, []));
-            this.index['1'] = 0;
-            for (var i = 0; i < names.length; i++) {
-                var name_1 = names[i];
-                var vector = new BasisBladeExpr(this.metric, [i]);
-                var index = Math.pow(2, i);
-                this.index[name_1] = index;
+            this._bnames = [];
+            this._metric = g;
+            this.basis.push(new BasisBladeExpr(this, []));
+            this._bnames[0] = '1';
+            for (var i = 0; i < this._metric.length; i++) {
+                var vector = new BasisBladeExpr(this, [i]);
                 var bLength = this.basis.length;
                 for (var j = 0; j < bLength; j++) {
                     var existing = this.basis[j];
@@ -981,8 +1191,30 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 }
             }
         }
+        Algebra.prototype.bladeName = function (vectors) {
+            var _this = this;
+            if (vectors.length > 0) {
+                return vectors.map(function (i) {
+                    if (_this._bnames) {
+                        var basisIndex = Math.pow(2, i);
+                        if (_this._bnames[basisIndex]) {
+                            return _this._bnames[basisIndex];
+                        }
+                    }
+                    return "e" + (i + 1);
+                }).join(' ^ ');
+            }
+            else {
+                return this._bnames[0];
+            }
+        };
+        Algebra.prototype.g = function (u, v) {
+            var i = u.vectors[0];
+            var j = v.vectors[0];
+            return new ScalarExpr(this, this._metric[i][j]);
+        };
         Algebra.prototype.scalar = function (value) {
-            return new ScalarExpr(this.metric, value);
+            return new ScalarExpr(this, value);
         };
         Algebra.prototype.simplify = function (expr) {
             var count = 0;

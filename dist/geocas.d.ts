@@ -19,7 +19,7 @@ declare module GeoCAS {
 
     class Algebra {
         basis: { [index: number]: Expr };
-        constructor(vectors: string[], metric: number[][]);
+        constructor(metric: number[][], unused?: string[]);
         scalar(value: number | string): Expr;
         simplify(expr: Expr): Expr;
     }
