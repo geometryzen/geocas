@@ -653,6 +653,18 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
                 return void 0;
             }
         };
+        Expr.prototype.__tilde__ = function () {
+            return new ReverseExpr(this);
+        };
+        Expr.prototype.__bang__ = function () {
+            return new InverseExpr(this);
+        };
+        Expr.prototype.__neg__ = function () {
+            return new NegExpr(this);
+        };
+        Expr.prototype.__pos__ = function () {
+            return new PosExpr(this);
+        };
         return Expr;
     }());
     exports.Expr = Expr;
@@ -1168,6 +1180,66 @@ define('geocas/math/Algebra',["require", "exports"], function (require, exports)
         return WedgeExpr;
     }(BinaryExpr));
     exports.WedgeExpr = WedgeExpr;
+    var ReverseExpr = (function (_super) {
+        __extends(ReverseExpr, _super);
+        function ReverseExpr(inner) {
+            _super.call(this, inner.env, 'ReverseExpr');
+            this.inner = inner;
+        }
+        ReverseExpr.prototype.toPrefix = function () {
+            return "reverse(" + this.inner + ")";
+        };
+        ReverseExpr.prototype.toString = function () {
+            return "~" + this.inner;
+        };
+        return ReverseExpr;
+    }(Expr));
+    exports.ReverseExpr = ReverseExpr;
+    var InverseExpr = (function (_super) {
+        __extends(InverseExpr, _super);
+        function InverseExpr(inner) {
+            _super.call(this, inner.env, 'InverseExpr');
+            this.inner = inner;
+        }
+        InverseExpr.prototype.toPrefix = function () {
+            return "inverse(" + this.inner + ")";
+        };
+        InverseExpr.prototype.toString = function () {
+            return "!" + this.inner;
+        };
+        return InverseExpr;
+    }(Expr));
+    exports.InverseExpr = InverseExpr;
+    var NegExpr = (function (_super) {
+        __extends(NegExpr, _super);
+        function NegExpr(inner) {
+            _super.call(this, inner.env, 'NegExpr');
+            this.inner = inner;
+        }
+        NegExpr.prototype.toPrefix = function () {
+            return "neg(" + this.inner + ")";
+        };
+        NegExpr.prototype.toString = function () {
+            return "-" + this.inner;
+        };
+        return NegExpr;
+    }(Expr));
+    exports.NegExpr = NegExpr;
+    var PosExpr = (function (_super) {
+        __extends(PosExpr, _super);
+        function PosExpr(inner) {
+            _super.call(this, inner.env, 'PosExpr');
+            this.inner = inner;
+        }
+        PosExpr.prototype.toPrefix = function () {
+            return "pos(" + this.inner + ")";
+        };
+        PosExpr.prototype.toString = function () {
+            return "+" + this.inner;
+        };
+        return PosExpr;
+    }(Expr));
+    exports.PosExpr = PosExpr;
     var Algebra = (function () {
         function Algebra(g, unused) {
             this.basis = [];

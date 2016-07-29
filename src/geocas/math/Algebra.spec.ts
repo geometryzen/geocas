@@ -212,6 +212,34 @@ describe("Algebra", function() {
                 expect(expr.toString()).toBe("5 ^ e1");
             });
         });
+        describe("__tilde__", function() {
+            it("should be reversion", function() {
+                const expr = e1.__tilde__();
+                expect(expr.toPrefix()).toBe("reverse(e1)");
+                expect(expr.toString()).toBe("~e1");
+            });
+        });
+        describe("__bang__", function() {
+            it("should be inverse", function() {
+                const expr = e1.__bang__();
+                expect(expr.toPrefix()).toBe("inverse(e1)");
+                expect(expr.toString()).toBe("!e1");
+            });
+        });
+        describe("__neg__", function() {
+            it("should be negative", function() {
+                const expr = e1.__neg__();
+                expect(expr.toPrefix()).toBe("neg(e1)");
+                expect(expr.toString()).toBe("-e1");
+            });
+        });
+        describe("__pos__", function() {
+            it("should be positive", function() {
+                const expr = e1.__pos__();
+                expect(expr.toPrefix()).toBe("pos(e1)");
+                expect(expr.toString()).toBe("+e1");
+            });
+        });
         it("BasisBladeExpr", function() {
             expect(e1.dirty).toBeFalsy();
             expect(e1.copy(false).dirty).toBeFalsy();

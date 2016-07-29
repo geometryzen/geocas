@@ -9,7 +9,7 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
         }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var wedgeBlades, Expr, BinaryExpr, AddExpr, SubExpr, MultiplyExpr, DivideExpr, LContractExpr, RContractExpr, BasisBladeExpr, ScalarExpr, VBarExpr, WedgeExpr, Algebra;
+    var wedgeBlades, Expr, BinaryExpr, AddExpr, SubExpr, MultiplyExpr, DivideExpr, LContractExpr, RContractExpr, BasisBladeExpr, ScalarExpr, VBarExpr, WedgeExpr, ReverseExpr, InverseExpr, NegExpr, PosExpr, Algebra;
     return {
         setters: [],
         execute: function () {
@@ -196,6 +196,18 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
                     } else {
                         return void 0;
                     }
+                };
+                Expr.prototype.__tilde__ = function () {
+                    return new ReverseExpr(this);
+                };
+                Expr.prototype.__bang__ = function () {
+                    return new InverseExpr(this);
+                };
+                Expr.prototype.__neg__ = function () {
+                    return new NegExpr(this);
+                };
+                Expr.prototype.__pos__ = function () {
+                    return new PosExpr(this);
                 };
                 return Expr;
             }();
@@ -689,6 +701,66 @@ System.register("geocas/math/Algebra.js", [], function (exports_1, context_1) {
                 return WedgeExpr;
             }(BinaryExpr);
             exports_1("WedgeExpr", WedgeExpr);
+            ReverseExpr = function (_super) {
+                __extends(ReverseExpr, _super);
+                function ReverseExpr(inner) {
+                    _super.call(this, inner.env, 'ReverseExpr');
+                    this.inner = inner;
+                }
+                ReverseExpr.prototype.toPrefix = function () {
+                    return "reverse(" + this.inner + ")";
+                };
+                ReverseExpr.prototype.toString = function () {
+                    return "~" + this.inner;
+                };
+                return ReverseExpr;
+            }(Expr);
+            exports_1("ReverseExpr", ReverseExpr);
+            InverseExpr = function (_super) {
+                __extends(InverseExpr, _super);
+                function InverseExpr(inner) {
+                    _super.call(this, inner.env, 'InverseExpr');
+                    this.inner = inner;
+                }
+                InverseExpr.prototype.toPrefix = function () {
+                    return "inverse(" + this.inner + ")";
+                };
+                InverseExpr.prototype.toString = function () {
+                    return "!" + this.inner;
+                };
+                return InverseExpr;
+            }(Expr);
+            exports_1("InverseExpr", InverseExpr);
+            NegExpr = function (_super) {
+                __extends(NegExpr, _super);
+                function NegExpr(inner) {
+                    _super.call(this, inner.env, 'NegExpr');
+                    this.inner = inner;
+                }
+                NegExpr.prototype.toPrefix = function () {
+                    return "neg(" + this.inner + ")";
+                };
+                NegExpr.prototype.toString = function () {
+                    return "-" + this.inner;
+                };
+                return NegExpr;
+            }(Expr);
+            exports_1("NegExpr", NegExpr);
+            PosExpr = function (_super) {
+                __extends(PosExpr, _super);
+                function PosExpr(inner) {
+                    _super.call(this, inner.env, 'PosExpr');
+                    this.inner = inner;
+                }
+                PosExpr.prototype.toPrefix = function () {
+                    return "pos(" + this.inner + ")";
+                };
+                PosExpr.prototype.toString = function () {
+                    return "+" + this.inner;
+                };
+                return PosExpr;
+            }(Expr);
+            exports_1("PosExpr", PosExpr);
             Algebra = function () {
                 function Algebra(g, unused) {
                     this.basis = [];

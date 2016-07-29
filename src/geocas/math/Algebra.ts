@@ -219,6 +219,18 @@ export class Expr {
             return void 0;
         }
     }
+    __tilde__(): Expr {
+        return new ReverseExpr(this);
+    }
+    __bang__(): Expr {
+        return new InverseExpr(this);
+    }
+    __neg__(): Expr {
+        return new NegExpr(this);
+    }
+    __pos__(): Expr {
+        return new PosExpr(this);
+    }
 }
 
 export class BinaryExpr extends Expr {
@@ -688,6 +700,54 @@ export class WedgeExpr extends BinaryExpr {
     }
     toString() {
         return `${this.lhs} ^ ${this.rhs}`;
+    }
+}
+
+export class ReverseExpr extends Expr {
+    constructor(public inner: Expr) {
+        super(inner.env, 'ReverseExpr');
+    }
+    toPrefix() {
+        return `reverse(${this.inner})`;
+    }
+    toString() {
+        return `~${this.inner}`;
+    }
+}
+
+export class InverseExpr extends Expr {
+    constructor(public inner: Expr) {
+        super(inner.env, 'InverseExpr');
+    }
+    toPrefix() {
+        return `inverse(${this.inner})`;
+    }
+    toString() {
+        return `!${this.inner}`;
+    }
+}
+
+export class NegExpr extends Expr {
+    constructor(public inner: Expr) {
+        super(inner.env, 'NegExpr');
+    }
+    toPrefix() {
+        return `neg(${this.inner})`;
+    }
+    toString() {
+        return `-${this.inner}`;
+    }
+}
+
+export class PosExpr extends Expr {
+    constructor(public inner: Expr) {
+        super(inner.env, 'PosExpr');
+    }
+    toPrefix() {
+        return `pos(${this.inner})`;
+    }
+    toString() {
+        return `+${this.inner}`;
     }
 }
 
