@@ -8,7 +8,7 @@ class GeoCAS {
         this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
         this.LAST_MODIFIED = '2016-09-19';
         this.NAMESPACE = 'GeoCAS';
-        this.VERSION = '0.2.0';
+        this.VERSION = '1.1.0';
     }
 
     log(message?: any, ...optionalParams: any[]): void {
