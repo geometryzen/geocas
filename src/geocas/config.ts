@@ -6,9 +6,9 @@ class GeoCAS {
 
     constructor() {
         this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
-        this.LAST_MODIFIED = '2016-07-20';
+        this.LAST_MODIFIED = '2016-09-19';
         this.NAMESPACE = 'GeoCAS';
-        this.VERSION = '1.0.0';
+        this.VERSION = '0.2.0';
     }
 
     log(message?: any, ...optionalParams: any[]): void {

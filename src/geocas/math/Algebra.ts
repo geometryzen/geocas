@@ -342,7 +342,10 @@ export class MultiplyExpr extends BinaryExpr {
     simplify(): Expr {
         const a = this.lhs.simplify();
         const b = this.rhs.simplify();
-        if (a instanceof MultiplyExpr) {
+        if (!(a instanceof ScalarExpr) && b instanceof ScalarExpr) {
+            return new MultiplyExpr(b, a, true);
+        }
+        else if (a instanceof MultiplyExpr) {
             const aL = a.lhs;
             const aR = a.rhs;
             if (aL instanceof ScalarExpr) {
@@ -362,7 +365,7 @@ export class MultiplyExpr extends BinaryExpr {
                 return new MultiplyExpr(a, b);
             }
         }
-        if (a instanceof ScalarExpr) {
+        else if (a instanceof ScalarExpr) {
             if (typeof a.value === 'number' && a.value === 0) {
                 return a.copy(true);
             }

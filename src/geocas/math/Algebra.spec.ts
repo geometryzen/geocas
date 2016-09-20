@@ -308,24 +308,36 @@ describe("Algebra", function() {
 
             expect(e1.__wedge__(e1).toString()).toBe("e1 ^ e1");
         });
-        it("simplify", function() {
-            expect(g3.simplify(uno).toString()).toBe("1");
-            expect(g3.simplify(one).toString()).toBe("1");
-            expect(g3.simplify(e1).toString()).toBe("e1");
-            expect(g3.simplify(e2).toString()).toBe("e2");
-            expect(g3.simplify(e3).toString()).toBe("e3");
-            expect(g3.simplify(two).toString()).toBe("2");
-            expect(g3.simplify(u2.__wedge__(u2)).toString()).toBe("0");
-            expect(g3.simplify(uno.__wedge__(uno)).toString()).toBe("0");
-            expect(g3.simplify(e1.__wedge__(uno)).toString()).toBe("e1");
-            expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
-            expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
-            // expect(g3.simplify(uno.__wedge__(one)).toString()).toBe("0");
-            expect(g3.simplify(uno.__wedge__(e1)).toString()).toBe("e1");
-            expect(g3.simplify(e12).toString()).toBe("e1 ^ e2");
-            expect(g3.simplify(e12) instanceof BasisBladeExpr).toBeTruthy();
-            expect(g3.simplify(e12).toString()).toBe("e1 ^ e2");
-            expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
+        describe("", function() {
+            it("simplify", function() {
+                expect(g3.simplify(uno).toString()).toBe("1");
+                expect(g3.simplify(one).toString()).toBe("1");
+                expect(g3.simplify(e1).toString()).toBe("e1");
+                expect(g3.simplify(e2).toString()).toBe("e2");
+                expect(g3.simplify(e3).toString()).toBe("e3");
+                expect(g3.simplify(two).toString()).toBe("2");
+                expect(g3.simplify(u2.__wedge__(u2)).toString()).toBe("0");
+                expect(g3.simplify(uno.__wedge__(uno)).toString()).toBe("0");
+                expect(g3.simplify(e1.__wedge__(uno)).toString()).toBe("e1");
+                expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
+                expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
+                // expect(g3.simplify(uno.__wedge__(one)).toString()).toBe("0");
+                expect(g3.simplify(uno.__wedge__(e1)).toString()).toBe("e1");
+                expect(g3.simplify(e12).toString()).toBe("e1 ^ e2");
+                expect(g3.simplify(e12) instanceof BasisBladeExpr).toBeTruthy();
+                expect(g3.simplify(e12).toString()).toBe("e1 ^ e2");
+                expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
+            });
+            it("e1 ^ e2", function() {
+                expect(g3.simplify(e1.__wedge__(e1)).toString()).toBe("0");
+            });
+            it("e1 ^ e2", function() {
+                const expr = e1.__wedge__(e2);
+                expect(expr.toPrefix()).toBe("ext(e1, e2)");
+                expect(expr.toString()).toBe("e1 ^ e2");
+                expect(g3.simplify(expr).toPrefix()).toBe("e1 ^ e2");
+                expect(g3.simplify(expr).toString()).toBe("e1 ^ e2");
+            });
         });
         describe("hoisting scalar through * *", function() {
             describe("(5 * e1) * e2", function() {
@@ -357,6 +369,14 @@ describe("Algebra", function() {
                 const expr = e2.__mul__(s).__rmul__(e1);
                 it("should hoist", function() {
                     expect(expr.toPrefix()).toBe("mul(e1, mul(e2, 5))");
+                    expect(g3.simplify(expr).toPrefix()).toBe("mul(5, mul(e1, e2))");
+                });
+            });
+            describe("(e1 * e2) * 5", function() {
+                const s = g3.scalar(5);
+                const expr = e1.__mul__(e2).__mul__(s);
+                it("should hoist", function() {
+                    expect(expr.toPrefix()).toBe("mul(mul(e1, e2), 5)");
                     expect(g3.simplify(expr).toPrefix()).toBe("mul(5, mul(e1, e2))");
                 });
             });

@@ -10,7 +10,8 @@
         "moduleResolution": "classic",
         "sourceMap": false,
         "inlineSourceMap": false,
-        "inlineSources": false
+        "inlineSources": false,
+        "noImplicitReturns": true
     },
     "files": [
         "src/geocas/math/Algebra.ts"

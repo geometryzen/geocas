@@ -1,6 +1,6 @@
 {
     "name": "geocas",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "WebGL library for mathematical physics using Geometric Algebra",
     "author": {
         "name": "David Holmes",
@@ -21,10 +21,10 @@
         }
     ],
     "devDependencies": {
-        "jasmine": "~2.4.1",
-        "almond": "~0.3.2",
-        "r.js": "~2.2.0",
-        "requirejs": "~2.2.0",
+        "jasmine": "^2.5.2",
+        "almond": "^0.3.3",
+        "r.js": "~2.3.2",
+        "requirejs": "~2.3.2",
         "jscover": "http://github.com/tntim96/JSCover.git"
     },
     "ignore": [
