@@ -82,23 +82,33 @@ export default function blade<T>(b: number, weight: T, adapter: FieldAdapter<T>)
             return blade(SCALAR, adapter.zero(), adapter);
         },
         asString(names?: string[]): string {
-            let result = "";
+            let bladePart = "";
             let i = 1;
             let x = b;
             while (x !== 0) {
                 if ((x & 1) !== 0) {
-                    if (result.length > 0) result += "^";
+                    if (bladePart.length > 0) bladePart += " ^ ";
                     if (isUndefined(names) || (names === null) || (i > names.length) || (names[i - 1] == null)) {
-                        result = result + "e" + i;
+                        bladePart = bladePart + "e" + i;
                     }
                     else {
-                        result = result + names[i - 1];
+                        bladePart = bladePart + names[i - 1];
                     }
                 }
                 x >>= 1;
                 i++;
             }
-            return (result.length === 0) ? adapter.asString(weight) : adapter.asString(weight) + "*" + result;
+            if (bladePart.length === 0) {
+                return adapter.asString(weight);
+            }
+            else {
+                if (adapter.isOne(weight)) {
+                    return bladePart;
+                }
+                else {
+                    return adapter.asString(weight) + " * " + bladePart;
+                }
+            }
         },
         toString(): string {
             return that.asString(void 0);

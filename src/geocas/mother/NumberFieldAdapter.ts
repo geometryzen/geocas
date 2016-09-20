@@ -25,6 +25,9 @@ export default class NumberFieldAdapter implements FieldAdapter<number> {
     isField(arg: any): arg is number {
         return typeof arg === 'number';
     }
+    isOne(arg: number): boolean {
+        return arg === 1;
+    }
     isZero(arg: number): boolean {
         return arg === 0;
     }

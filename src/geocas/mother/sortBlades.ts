@@ -9,7 +9,7 @@ function compareFn<T>(a: Blade<T>, b: Blade<T>): number {
         return +1;
     }
     else {
-        throw new Error("TODO");
+        return 0;
     }
 }
 

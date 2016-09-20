@@ -7,6 +7,7 @@ interface FieldAdapter<T> {
     asString(arg: T): string;
     cos(arg: T): T;
     isField(arg: any): arg is T;
+    isOne(arg: T): boolean;
     isZero(arg: T): boolean;
     one(): T;
     scale(arg: T, alpha: number): T;
