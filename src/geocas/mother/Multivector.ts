@@ -43,6 +43,8 @@ export interface Multivector<T> {
     __wedge__(rhs: Multivector<T>): Multivector<T>;
     __pos__(): Multivector<T>;
     __neg__(): Multivector<T>;
+    mul(rhs: Multivector<T>): Multivector<T>;
+    mulByScalar(α: T): Multivector<T>;
     divByScalar(α: T): Multivector<T>;
     dual(): Multivector<T>;
     /**
@@ -53,7 +55,6 @@ export interface Multivector<T> {
     asString(names: string[]): string;
     rev(): Multivector<T>;
     scalarCoordinate(): T;
-    scale(multiplier: T): Multivector<T>;
     /**
      * Returns the scalar product of this multivector with rhs, i.e. this | rhs. 
      */
@@ -72,10 +73,10 @@ function isMultivector<T>(arg: any): arg is Multivector<T> {
 
 function mul<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
     if (adapter.isField(lhs) && isMultivector(rhs)) {
-        return rhs.scale(lhs);
+        return rhs.mulByScalar(lhs);
     }
     else if (isMultivector(lhs) && adapter.isField(rhs)) {
-        return lhs.scale(rhs);
+        return lhs.mulByScalar(rhs);
     }
     else {
         if (isMultivector(lhs) && isMultivector(rhs)) {
@@ -192,6 +193,20 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
                 rez.push(rhs.blades[k].__neg__());
             }
             return mv(simplify(rez, adapter), metric, adapter);
+        },
+        mul(rhs: Multivector<T>): Multivector<T> {
+            return mul(that, rhs, metric, adapter);
+        },
+        mulByScalar(α: T): Multivector<T> {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                const scale = adapter.mul(B.weight, α);
+                if (!adapter.isZero(scale)) {
+                    rez.push(blade(B.bitmap, scale, adapter));
+                }
+            }
+            return mv(rez, metric, adapter);
         },
         __mul__(rhs: T | Multivector<T>): Multivector<T> {
             return mul(that, rhs, metric, adapter);
@@ -327,17 +342,6 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
                 }
             }
             return adapter.zero();
-        },
-        scale(α: T): Multivector<T> {
-            const rez: Blade<T>[] = [];
-            for (let i = 0; i < blades.length; i++) {
-                const B = blades[i];
-                const scale = adapter.mul(B.weight, α);
-                if (!adapter.isZero(scale)) {
-                    rez.push(blade(B.bitmap, scale, adapter));
-                }
-            }
-            return mv(rez, metric, adapter);
         },
         scp(rhs: Multivector<T>): T {
             return that.__vbar__(rhs).scalarCoordinate();

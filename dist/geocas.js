@@ -3669,10 +3669,10 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
     }
     function mul(lhs, rhs, metric, adapter) {
         if (adapter.isField(lhs) && isMultivector(rhs)) {
-            return rhs.scale(lhs);
+            return rhs.mulByScalar(lhs);
         }
         else if (isMultivector(lhs) && adapter.isField(rhs)) {
-            return lhs.scale(rhs);
+            return lhs.mulByScalar(rhs);
         }
         else {
             if (isMultivector(lhs) && isMultivector(rhs)) {
@@ -3779,6 +3779,20 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     rez.push(rhs.blades[k].__neg__());
                 }
                 return mv(simplify_1.default(rez, adapter), metric, adapter);
+            },
+            mul: function (rhs) {
+                return mul(that, rhs, metric, adapter);
+            },
+            mulByScalar: function (α) {
+                var rez = [];
+                for (var i = 0; i < blades.length; i++) {
+                    var B = blades[i];
+                    var scale = adapter.mul(B.weight, α);
+                    if (!adapter.isZero(scale)) {
+                        rez.push(Blade_1.default(B.bitmap, scale, adapter));
+                    }
+                }
+                return mv(rez, metric, adapter);
             },
             __mul__: function (rhs) {
                 return mul(that, rhs, metric, adapter);
@@ -3911,17 +3925,6 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     }
                 }
                 return adapter.zero();
-            },
-            scale: function (α) {
-                var rez = [];
-                for (var i = 0; i < blades.length; i++) {
-                    var B = blades[i];
-                    var scale = adapter.mul(B.weight, α);
-                    if (!adapter.isZero(scale)) {
-                        rez.push(Blade_1.default(B.bitmap, scale, adapter));
-                    }
-                }
-                return mv(rez, metric, adapter);
             },
             scp: function (rhs) {
                 return that.__vbar__(rhs).scalarCoordinate();
