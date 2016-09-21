@@ -43,8 +43,10 @@ export interface Multivector<T> {
     __wedge__(rhs: Multivector<T>): Multivector<T>;
     __pos__(): Multivector<T>;
     __neg__(): Multivector<T>;
+    inv(): Multivector<T>;
     mul(rhs: Multivector<T>): Multivector<T>;
     mulByScalar(α: T): Multivector<T>;
+    div(rhs: Multivector<T>): Multivector<T>;
     divByScalar(α: T): Multivector<T>;
     dual(): Multivector<T>;
     /**
@@ -194,6 +196,18 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
             }
             return mv(simplify(rez, adapter), metric, adapter);
         },
+        inv(): Multivector<T> {
+            // We'll start by trying the versor inverse before doing the general inverse.
+            const reverse = that.rev();
+            const denom = that.mul(reverse);
+            // If we have a scalar, then we can compute the versor inverse
+            if (denom.blades.length === 1 && denom.blades[0].bitmap === 0) {
+                return reverse.divByScalar(denom.scalarCoordinate());
+            }
+            else {
+                throw new Error("non-invertible multivector (versor inverse)");
+            }
+        },
         mul(rhs: Multivector<T>): Multivector<T> {
             return mul(that, rhs, metric, adapter);
         },
@@ -303,6 +317,9 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
             return cosθ.__add__(i.__mul__(sinθ));
         },
         extractGrade,
+        div(rhs: Multivector<T>): Multivector<T> {
+            return that.mul(rhs.inv());
+        },
         divByScalar(α: T): Multivector<T> {
             const rez: Blade<T>[] = [];
             for (let i = 0; i < blades.length; i++) {

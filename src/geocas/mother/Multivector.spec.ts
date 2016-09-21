@@ -827,6 +827,32 @@ describe("Multivector", function () {
                 expect(M.blades[0].weight).toBe(-1);
             });
         });
+        describe("inv", function () {
+            it("1", function () {
+                const M = one.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e1", function () {
+                const M = e1.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e2", function () {
+                const M = e2.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e12", function () {
+                const M = e12.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight).toBe(-1);
+            });
+        });
     });
     describe("G11", function () {
         const diag = [1, -1];
@@ -1645,6 +1671,32 @@ describe("Multivector", function () {
                 const M = e12.__vbar__(e12);
                 expect(M.blades.length).toBe(1);
                 expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(1);
+            });
+        });
+        describe("inv", function () {
+            it("1", function () {
+                const M = one.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e1", function () {
+                const M = e1.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e2", function () {
+                const M = e2.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight).toBe(-1);
+            });
+            it("e12", function () {
+                const M = e12.inv();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
                 expect(M.blades[0].weight).toBe(1);
             });
         });
