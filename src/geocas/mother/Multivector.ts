@@ -43,9 +43,7 @@ export interface Multivector<T> {
     __wedge__(rhs: Multivector<T>): Multivector<T>;
     __pos__(): Multivector<T>;
     __neg__(): Multivector<T>;
-    inv(): Multivector<T>;
-    mul(rhs: Multivector<T>): Multivector<T>;
-    mulByScalar(α: T): Multivector<T>;
+    asString(names: string[]): string;
     div(rhs: Multivector<T>): Multivector<T>;
     divByScalar(α: T): Multivector<T>;
     dual(): Multivector<T>;
@@ -54,7 +52,9 @@ export interface Multivector<T> {
      */
     exp(): Multivector<T>;
     extractGrade(grade: number): Multivector<T>;
-    asString(names: string[]): string;
+    inv(): Multivector<T>;
+    mul(rhs: Multivector<T>): Multivector<T>;
+    mulByScalar(α: T): Multivector<T>;
     rev(): Multivector<T>;
     scalarCoordinate(): T;
     /**
@@ -70,6 +70,31 @@ function isMultivector<T>(arg: any): arg is Multivector<T> {
     }
     else {
         return false;
+    }
+}
+
+function isMetric(arg: Metric<any>): arg is Metric<any> {
+    return typeof arg.getEigenMetric === 'function';
+}
+
+/**
+ * Computes the dimension of the vector space from the metric.
+ */
+function dim<T>(metric: number | number[] | Metric<T>): number {
+    if (isNumber(metric)) {
+        return metric;
+    }
+    else if (isArray(metric)) {
+        return metric.length;
+    }
+    else if (isUndefined(metric)) {
+        throw new Error("metric is undefined");
+    }
+    else if (isMetric(metric)) {
+        return metric.getEigenMetric().length;
+    }
+    else {
+        throw new Error("metric is undefined");
     }
 }
 
@@ -332,16 +357,9 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
             return mv(rez, metric, adapter);
         },
         dual(): Multivector<T> {
-            if (isUndefined(metric)) {
-                throw new Error("metric must be number | number[] | Metric<T>");
-            }
-            else if (isNumber(metric)) {
-                // const dim = metric;
-                return that;
-            }
-            else {
-                throw new Error("metric must be number | number[] | Metric<T>");
-            }
+            const n = dim(metric);
+            const I = mv([blade((1 << n) - 1, adapter.one(), adapter)], metric, adapter);
+            return that.__lshift__(I);
         },
         rev(): Multivector<T> {
             const rez: Blade<T>[] = [];

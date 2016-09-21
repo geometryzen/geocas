@@ -3250,6 +3250,22 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
             return false;
         }
     }
+    function isMetric(arg) {
+        return typeof arg.getEigenMetric === 'function';
+    }
+    function dim(metric) {
+        if (isNumber_1.default(metric)) {
+            return metric;
+        } else if (isArray_1.default(metric)) {
+            return metric.length;
+        } else if (isUndefined_1.default(metric)) {
+            throw new Error("metric is undefined");
+        } else if (isMetric(metric)) {
+            return metric.getEigenMetric().length;
+        } else {
+            throw new Error("metric is undefined");
+        }
+    }
     function mul(lhs, rhs, metric, adapter) {
         if (adapter.isField(lhs) && isMultivector(rhs)) {
             return rhs.mulByScalar(lhs);
@@ -3484,13 +3500,9 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
                 return mv(rez, metric, adapter);
             },
             dual: function () {
-                if (isUndefined_1.default(metric)) {
-                    throw new Error("metric must be number | number[] | Metric<T>");
-                } else if (isNumber_1.default(metric)) {
-                    return that;
-                } else {
-                    throw new Error("metric must be number | number[] | Metric<T>");
-                }
+                var n = dim(metric);
+                var I = mv([Blade_1.default((1 << n) - 1, adapter.one(), adapter)], metric, adapter);
+                return that.__lshift__(I);
             },
             rev: function () {
                 var rez = [];
@@ -3658,7 +3670,7 @@ System.register('geocas/config.js', [], function (exports_1, context_1) {
                     this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
                     this.LAST_MODIFIED = '2016-09-21';
                     this.NAMESPACE = 'GeoCAS';
-                    this.VERSION = '1.4.0';
+                    this.VERSION = '1.5.0';
                 }
                 GeoCAS.prototype.log = function (message) {
                     var optionalParams = [];

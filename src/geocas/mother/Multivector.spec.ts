@@ -853,6 +853,32 @@ describe("Multivector", function () {
                 expect(M.blades[0].weight).toBe(-1);
             });
         });
+        describe("dual", function () {
+            it("1", function () {
+                const M = one.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e1", function () {
+                const M = e1.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e2", function () {
+                const M = e2.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight).toBe(-1);
+            });
+            it("e12", function () {
+                const M = e12.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(-1);
+            });
+        });
     });
     describe("G11", function () {
         const diag = [1, -1];
@@ -1700,6 +1726,32 @@ describe("Multivector", function () {
                 expect(M.blades[0].weight).toBe(1);
             });
         });
+        describe("dual", function () {
+            it("1", function () {
+                const M = one.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e1", function () {
+                const M = e1.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e2", function () {
+                const M = e2.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e12", function () {
+                const M = e12.dual();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(1);
+            });
+        });
     });
     it("one", function () {
         const one = mv([blade(0, 1, nfa)], 3, nfa);
@@ -1738,10 +1790,5 @@ describe("Multivector", function () {
             expect(rez.blades[0].bitmap).toBe(0);
             expect(rez.blades[0].weight).toBe(2);
         }
-    });
-    it("dual", function () {
-        const one = mv([blade(0, 1, nfa)], 3, nfa);
-        const I = one.dual();
-        expect(I.blades.length).toBe(1);
     });
 });
