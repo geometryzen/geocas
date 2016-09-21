@@ -1,4 +1,5 @@
 interface FieldAdapter<T> {
+    abs(arg: T): number;
     add(lhs: T, rhs: T): T;
     sub(lhs: T, rhs: T): T;
     mul(lhs: T, rhs: T): T;

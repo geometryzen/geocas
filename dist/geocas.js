@@ -3967,6 +3967,9 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports"], function (requ
     var NumberFieldAdapter = (function () {
         function NumberFieldAdapter() {
         }
+        NumberFieldAdapter.prototype.abs = function (arg) {
+            return Math.abs(arg);
+        };
         NumberFieldAdapter.prototype.add = function (lhs, rhs) {
             return lhs + rhs;
         };

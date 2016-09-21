@@ -1,6 +1,9 @@
 import FieldAdapter from './FieldAdapter';
 
 export default class NumberFieldAdapter implements FieldAdapter<number> {
+    abs(arg: number): number {
+        return Math.abs(arg);
+    }
     add(lhs: number, rhs: number): number {
         return lhs + rhs;
     }
