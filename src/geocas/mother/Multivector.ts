@@ -33,7 +33,9 @@ import FieldAdapter from './FieldAdapter';
 export interface Multivector<T> {
     blades: Blade<T>[];
     __add__(rhs: Multivector<T>): Multivector<T>;
+    __radd__(rhs: Multivector<T>): Multivector<T>;
     __sub__(rhs: Multivector<T>): Multivector<T>;
+    __rsub__(rhs: Multivector<T>): Multivector<T>;
     __mul__(rhs: T | Multivector<T>): Multivector<T>;
     __rmul__(lhs: T | Multivector<T>): Multivector<T>;
     __div__(rhs: T | Multivector<T>): Multivector<T>;
@@ -41,17 +43,25 @@ export interface Multivector<T> {
     __rshift__(rhs: Multivector<T>): Multivector<T>;
     __vbar__(rhs: Multivector<T>): Multivector<T>;
     __wedge__(rhs: Multivector<T>): Multivector<T>;
+    __bang__(): Multivector<T>;
     __pos__(): Multivector<T>;
     __neg__(): Multivector<T>;
+    __tilde__(): Multivector<T>;
+    add(rhs: Multivector<T>): Multivector<T>;
     asString(names: string[]): string;
+    cliffordConjugate(): Multivector<T>;
     div(rhs: Multivector<T>): Multivector<T>;
     divByScalar(α: T): Multivector<T>;
+    /**
+     * dual(M) = M << I, where I is the pseudoscalar of the space.
+     */
     dual(): Multivector<T>;
     /**
      * Returns the universal exponential function, exp, applied to this, i.e. exp(this).
      */
     exp(): Multivector<T>;
     extractGrade(grade: number): Multivector<T>;
+    gradeInversion(): Multivector<T>;
     inv(): Multivector<T>;
     mul(rhs: Multivector<T>): Multivector<T>;
     mulByScalar(α: T): Multivector<T>;
@@ -61,6 +71,7 @@ export interface Multivector<T> {
      * Returns the scalar product of this multivector with rhs, i.e. this | rhs. 
      */
     scp(rhs: Multivector<T>): T;
+    sub(rhs: Multivector<T>): Multivector<T>;
     toString(): string;
 }
 
@@ -95,6 +106,76 @@ function dim<T>(metric: number | number[] | Metric<T>): number {
     }
     else {
         throw new Error("metric is undefined");
+    }
+}
+
+function add<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+    if (adapter.isField(lhs) && isMultivector(rhs)) {
+        const rez: Blade<T>[] = [];
+        rez.push(blade(0, lhs, adapter));
+        for (let k = 0; k < rhs.blades.length; k++) {
+            rez.push(rhs.blades[k]);
+        }
+        return mv(simplify(rez, adapter), metric, adapter);
+    }
+    else if (isMultivector(lhs) && adapter.isField(rhs)) {
+        const rez: Blade<T>[] = [];
+        rez.push(blade(0, rhs, adapter));
+        for (let k = 0; k < lhs.blades.length; k++) {
+            rez.push(lhs.blades[k]);
+        }
+        return mv(simplify(rez, adapter), metric, adapter);
+    }
+    else {
+        if (isMultivector(lhs) && isMultivector(rhs)) {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < lhs.blades.length; i++) {
+                rez.push(lhs.blades[i]);
+            }
+            for (let k = 0; k < rhs.blades.length; k++) {
+                rez.push(rhs.blades[k]);
+            }
+            return mv(simplify(rez, adapter), metric, adapter);
+        }
+        else {
+            // We'll be using this function for operator overloading.
+            return void 0;
+        }
+    }
+}
+
+function sub<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+    if (adapter.isField(lhs) && isMultivector(rhs)) {
+        const rez: Blade<T>[] = [];
+        rez.push(blade(0, lhs, adapter));
+        for (let k = 0; k < rhs.blades.length; k++) {
+            rez.push(rhs.blades[k].__neg__());
+        }
+        return mv(simplify(rez, adapter), metric, adapter);
+    }
+    else if (isMultivector(lhs) && adapter.isField(rhs)) {
+        const rez: Blade<T>[] = [];
+        rez.push(blade(0, adapter.neg(rhs), adapter));
+        for (let k = 0; k < lhs.blades.length; k++) {
+            rez.push(lhs.blades[k]);
+        }
+        return mv(simplify(rez, adapter), metric, adapter);
+    }
+    else {
+        if (isMultivector(lhs) && isMultivector(rhs)) {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < lhs.blades.length; i++) {
+                rez.push(lhs.blades[i]);
+            }
+            for (let k = 0; k < rhs.blades.length; k++) {
+                rez.push(rhs.blades[k].__neg__());
+            }
+            return mv(simplify(rez, adapter), metric, adapter);
+        }
+        else {
+            // We'll be using this function for operator overloading.
+            return void 0;
+        }
     }
 }
 
@@ -201,25 +282,23 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
         get blades() {
             return blades;
         },
+        add(rhs: Multivector<T>): Multivector<T> {
+            return add(that, rhs, metric, adapter);
+        },
         __add__(rhs: Multivector<T>): Multivector<T> {
-            const rez: Blade<T>[] = [];
-            for (let i = 0; i < blades.length; i++) {
-                rez.push(blades[i]);
-            }
-            for (let k = 0; k < rhs.blades.length; k++) {
-                rez.push(rhs.blades[k]);
-            }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return add(that, rhs, metric, adapter);
+        },
+        __radd__(lhs: Multivector<T>): Multivector<T> {
+            return add(lhs, that, metric, adapter);
+        },
+        sub(rhs: Multivector<T>): Multivector<T> {
+            return sub(that, rhs, metric, adapter);
         },
         __sub__(rhs: Multivector<T>): Multivector<T> {
-            const rez: Blade<T>[] = [];
-            for (let i = 0; i < blades.length; i++) {
-                rez.push(blades[i]);
-            }
-            for (let k = 0; k < rhs.blades.length; k++) {
-                rez.push(rhs.blades[k].__neg__());
-            }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return sub(that, rhs, metric, adapter);
+        },
+        __rsub__(lhs: Multivector<T>): Multivector<T> {
+            return sub(lhs, that, metric, adapter);
         },
         inv(): Multivector<T> {
             // We'll start by trying the versor inverse before doing the general inverse.
@@ -320,6 +399,9 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
             }
             return mv(simplify(rez, adapter), metric, adapter);
         },
+        __bang__(): Multivector<T> {
+            return that.inv();
+        },
         __pos__(): Multivector<T> {
             return that;
         },
@@ -328,6 +410,17 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
             for (let i = 0; i < blades.length; i++) {
                 const B = blades[i];
                 rez.push(B.__neg__());
+            }
+            return mv(rez, metric, adapter);
+        },
+        __tilde__(): Multivector<T> {
+            return that.rev();
+        },
+        cliffordConjugate(): Multivector<T> {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                rez.push(B.cliffordConjugate());
             }
             return mv(rez, metric, adapter);
         },
@@ -360,6 +453,14 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
             const n = dim(metric);
             const I = mv([blade((1 << n) - 1, adapter.one(), adapter)], metric, adapter);
             return that.__lshift__(I);
+        },
+        gradeInversion(): Multivector<T> {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                rez.push(B.gradeInversion());
+            }
+            return mv(rez, metric, adapter);
         },
         rev(): Multivector<T> {
             const rez: Blade<T>[] = [];

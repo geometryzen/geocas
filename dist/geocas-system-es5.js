@@ -3266,6 +3266,66 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
             throw new Error("metric is undefined");
         }
     }
+    function add(lhs, rhs, metric, adapter) {
+        if (adapter.isField(lhs) && isMultivector(rhs)) {
+            var rez = [];
+            rez.push(Blade_1.default(0, lhs, adapter));
+            for (var k = 0; k < rhs.blades.length; k++) {
+                rez.push(rhs.blades[k]);
+            }
+            return mv(simplify_1.default(rez, adapter), metric, adapter);
+        } else if (isMultivector(lhs) && adapter.isField(rhs)) {
+            var rez = [];
+            rez.push(Blade_1.default(0, rhs, adapter));
+            for (var k = 0; k < lhs.blades.length; k++) {
+                rez.push(lhs.blades[k]);
+            }
+            return mv(simplify_1.default(rez, adapter), metric, adapter);
+        } else {
+            if (isMultivector(lhs) && isMultivector(rhs)) {
+                var rez = [];
+                for (var i = 0; i < lhs.blades.length; i++) {
+                    rez.push(lhs.blades[i]);
+                }
+                for (var k = 0; k < rhs.blades.length; k++) {
+                    rez.push(rhs.blades[k]);
+                }
+                return mv(simplify_1.default(rez, adapter), metric, adapter);
+            } else {
+                return void 0;
+            }
+        }
+    }
+    function sub(lhs, rhs, metric, adapter) {
+        if (adapter.isField(lhs) && isMultivector(rhs)) {
+            var rez = [];
+            rez.push(Blade_1.default(0, lhs, adapter));
+            for (var k = 0; k < rhs.blades.length; k++) {
+                rez.push(rhs.blades[k].__neg__());
+            }
+            return mv(simplify_1.default(rez, adapter), metric, adapter);
+        } else if (isMultivector(lhs) && adapter.isField(rhs)) {
+            var rez = [];
+            rez.push(Blade_1.default(0, adapter.neg(rhs), adapter));
+            for (var k = 0; k < lhs.blades.length; k++) {
+                rez.push(lhs.blades[k]);
+            }
+            return mv(simplify_1.default(rez, adapter), metric, adapter);
+        } else {
+            if (isMultivector(lhs) && isMultivector(rhs)) {
+                var rez = [];
+                for (var i = 0; i < lhs.blades.length; i++) {
+                    rez.push(lhs.blades[i]);
+                }
+                for (var k = 0; k < rhs.blades.length; k++) {
+                    rez.push(rhs.blades[k].__neg__());
+                }
+                return mv(simplify_1.default(rez, adapter), metric, adapter);
+            } else {
+                return void 0;
+            }
+        }
+    }
     function mul(lhs, rhs, metric, adapter) {
         if (adapter.isField(lhs) && isMultivector(rhs)) {
             return rhs.mulByScalar(lhs);
@@ -3353,25 +3413,23 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
             get blades() {
                 return blades;
             },
+            add: function (rhs) {
+                return add(that, rhs, metric, adapter);
+            },
             __add__: function (rhs) {
-                var rez = [];
-                for (var i = 0; i < blades.length; i++) {
-                    rez.push(blades[i]);
-                }
-                for (var k = 0; k < rhs.blades.length; k++) {
-                    rez.push(rhs.blades[k]);
-                }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return add(that, rhs, metric, adapter);
+            },
+            __radd__: function (lhs) {
+                return add(lhs, that, metric, adapter);
+            },
+            sub: function (rhs) {
+                return sub(that, rhs, metric, adapter);
             },
             __sub__: function (rhs) {
-                var rez = [];
-                for (var i = 0; i < blades.length; i++) {
-                    rez.push(blades[i]);
-                }
-                for (var k = 0; k < rhs.blades.length; k++) {
-                    rez.push(rhs.blades[k].__neg__());
-                }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return sub(that, rhs, metric, adapter);
+            },
+            __rsub__: function (lhs) {
+                return sub(lhs, that, metric, adapter);
             },
             inv: function () {
                 var reverse = that.rev();
@@ -3464,6 +3522,9 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
                 }
                 return mv(simplify_1.default(rez, adapter), metric, adapter);
             },
+            __bang__: function () {
+                return that.inv();
+            },
             __pos__: function () {
                 return that;
             },
@@ -3472,6 +3533,17 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
                 for (var i = 0; i < blades.length; i++) {
                     var B = blades[i];
                     rez.push(B.__neg__());
+                }
+                return mv(rez, metric, adapter);
+            },
+            __tilde__: function () {
+                return that.rev();
+            },
+            cliffordConjugate: function () {
+                var rez = [];
+                for (var i = 0; i < blades.length; i++) {
+                    var B = blades[i];
+                    rez.push(B.cliffordConjugate());
                 }
                 return mv(rez, metric, adapter);
             },
@@ -3503,6 +3575,14 @@ System.register('geocas/mother/Multivector.js', ['./Blade', './gpE', './gpL', '.
                 var n = dim(metric);
                 var I = mv([Blade_1.default((1 << n) - 1, adapter.one(), adapter)], metric, adapter);
                 return that.__lshift__(I);
+            },
+            gradeInversion: function () {
+                var rez = [];
+                for (var i = 0; i < blades.length; i++) {
+                    var B = blades[i];
+                    rez.push(B.gradeInversion());
+                }
+                return mv(rez, metric, adapter);
             },
             rev: function () {
                 var rez = [];
@@ -3670,7 +3750,7 @@ System.register('geocas/config.js', [], function (exports_1, context_1) {
                     this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
                     this.LAST_MODIFIED = '2016-09-21';
                     this.NAMESPACE = 'GeoCAS';
-                    this.VERSION = '1.5.0';
+                    this.VERSION = '1.6.0';
                 }
                 GeoCAS.prototype.log = function (message) {
                     var optionalParams = [];
