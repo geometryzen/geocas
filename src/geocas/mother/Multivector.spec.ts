@@ -7,6 +7,26 @@ const cfa = new ComplexFieldAdapter();
 const nfa = new NumberFieldAdapter();
 
 describe("Multivector", function () {
+    describe("labels", function () {
+        const G2 = algebra(2, nfa, ['i', 'j']);
+        const one = G2.one;
+        const e1 = G2.unit(0);
+        const e2 = G2.unit(1);
+        const e12 = e1.mul(e2);
+        it("one should be 1", function () {
+            expect(one.toString()).toBe('1');
+        });
+
+        it("e1 should be i", function () {
+            expect(e1.toString()).toBe('i');
+        });
+        it("e2 should be j", function () {
+            expect(e2.toString()).toBe('j');
+        });
+        it("e12 should be i ^ j", function () {
+            expect(e12.toString()).toBe('i ^ j');
+        });
+    });
     describe("G2 over number", function () {
         const G2 = algebra(2, nfa, ['e1', 'e2']);
         const one = G2.one;

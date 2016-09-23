@@ -10,6 +10,12 @@ export default class ComplexFieldAdapter implements FieldAdapter<Complex> {
     add(lhs: Complex, rhs: Complex): Complex {
         return lhs.__add__(rhs);
     }
+    eq(lhs: Complex, rhs: Complex): boolean {
+        return lhs.x === rhs.x && lhs.y === rhs.y;
+    }
+    ne(lhs: Complex, rhs: Complex): boolean {
+        return lhs.x !== rhs.x || lhs.y !== rhs.y;
+    }
     le(lhs: Complex, rhs: Complex): boolean {
         return lhs.x <= rhs.x;
     }
@@ -27,6 +33,9 @@ export default class ComplexFieldAdapter implements FieldAdapter<Complex> {
     }
     max(lhs: Complex, rhs: Complex): Complex {
         return (lhs.x >= rhs.x) ? lhs : rhs;
+    }
+    min(lhs: Complex, rhs: Complex): Complex {
+        return (lhs.x <= rhs.x) ? lhs : rhs;
     }
     mul(lhs: Complex, rhs: Complex): Complex {
         return lhs.__mul__(rhs);

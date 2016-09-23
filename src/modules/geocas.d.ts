@@ -50,11 +50,14 @@ declare module GeoCAS {
         abs(arg: T): T;
         add(lhs: T, rhs: T): T;
         sub(lhs: T, rhs: T): T;
+        eq(lhs: T, rhs: T): boolean;
+        ne(lhs: T, rhs: T): boolean;
         le(lhs: T, rhs: T): boolean;
         lt(lhs: T, rhs: T): boolean;
         ge(lhs: T, rhs: T): boolean;
         gt(lhs: T, rhs: T): boolean;
         max(lhs: T, rhs: T): T;
+        min(lhs: T, rhs: T): T;
         mul(lhs: T, rhs: T): T;
         mulByNumber(arg: T, alpha: number): T;
         div(lhs: T, rhs: T): T;
@@ -118,20 +121,11 @@ declare module GeoCAS {
         /**
          * Returns the scalar product of this multivector with rhs, i.e. this | rhs. 
          */
-        scp(rhs: Multivector<T>): T;
+        scp(rhs: Multivector<T>): Multivector<T>;
+        sqrt(): Multivector<T>;
         sub(rhs: Multivector<T>): Multivector<T>;
         toString(): string;
     }
-
-    /**
-     * Returns a scalar multivector with the specified weight.
-     */
-    function getScalar<T>(weight: T, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T>;
-
-    /**
-     * Returns a basis vector by index. index is in the integer range [0 ... dimensions).
-     */
-    function getBasisVector<T>(index: number, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T>;
 
     /**
      * A ready-made implementation of FieldAdapter<T> with T being a number.
@@ -145,11 +139,14 @@ declare module GeoCAS {
         mul(lhs: number, rhs: number): number;
         mulByNumber(arg: number, alpha: number): number;
         div(lhs: number, rhs: number): number;
+        eq(lhs: number, rhs: number): boolean;
+        ne(lhs: number, rhs: number): boolean;
         le(lhs: number, rhs: number): boolean;
         lt(lhs: number, rhs: number): boolean;
         ge(lhs: number, rhs: number): boolean;
         gt(lhs: number, rhs: number): boolean;
         max(lhs: number, rhs: number): number;
+        min(lhs: number, rhs: number): number;
         neg(arg: number): number;
         asString(arg: number): string;
         cos(arg: number): number;
@@ -160,17 +157,56 @@ declare module GeoCAS {
         sin(arg: number): number;
         sqrt(arg: number): number;
     }
+
+    /**
+     * 
+     */
     interface Algebra<T> {
+        /**
+         * Returns the adapter used to interact with the parameterized field.
+         */
         field: FieldAdapter<T>;
+        /**
+         * Returns the identity element for multiplication, 1.
+         */
         one: Multivector<T>;
+        /**
+         * Returns the identity element for addition, 0.
+         */
         zero: Multivector<T>;
         /**
          * Honoring Grassmann, who called the basis vectors "units".
          */
         unit(index: number): Multivector<T>;
+        /**
+         * Returns a copy of the basis vectors in an order corresponding to the metric.
+         */
+        units: Multivector<T>[];
     }
 
+    /**
+     * Generates the Geometric Algebra over a field using a specified metric.
+     * metric: 
+     *   number    : A number indicating the dimensionality of the vector space.
+     *   number[]  : The diagonal elements of the metric.
+     *   Metric<T> : A general metric for a non-orthogonal basis.
+     * field: The adapter for the scalar field over which the vectors operate.
+     * labels: An optional array of labels for the basis vectors.
+     */
     function algebra<T>(metric: number | number[] | Metric<T>, field: FieldAdapter<T>, labels?: string[]): Algebra<T>;
+
+    /**
+     * cos(angle) = (A | ~B) / |A||B|
+     */
+    function cosineOfAngleBetweenBlades<T>(A: Multivector<T>, B: Multivector<T>): Multivector<T>;
+    /**
+     * norm(A) = |A| = sqrt(A | ~A)
+     */
+    function norm<T>(A: Multivector<T>, B: Multivector<T>): Multivector<T>;
+    /**
+     * squaredNorm(A) = |A|^2 = A | ~A
+     */
+    function squaredNorm<T>(A: Multivector<T>, B: Multivector<T>): Multivector<T>;
 }
 
 declare module 'GeoCAS' {

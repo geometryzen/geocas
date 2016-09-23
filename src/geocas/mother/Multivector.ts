@@ -11,7 +11,9 @@ import rcoE from './rcoE';
 import rcoL from './rcoL';
 import rcoG from './rcoG';
 import isArray from '../checks/isArray';
+import isDefined from '../checks/isDefined';
 import isNumber from '../checks/isNumber';
+import isString from '../checks/isString';
 import isUndefined from '../checks/isUndefined';
 import {Metric} from './Blade';
 import mustBeDefined from '../checks/mustBeDefined';
@@ -77,7 +79,8 @@ export interface Multivector<T> {
     /**
      * Returns the scalar product of this multivector with rhs, i.e. this | rhs. 
      */
-    scp(rhs: Multivector<T>): T;
+    scp(rhs: Multivector<T>): Multivector<T>;
+    sqrt(): Multivector<T>;
     sub(rhs: Multivector<T>): Multivector<T>;
     toString(): string;
 }
@@ -116,14 +119,14 @@ function dim<T>(metric: number | number[] | Metric<T>): number {
     }
 }
 
-function add<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+function add<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>, labels: string[]): Multivector<T> {
     if (adapter.isField(lhs) && isMultivector(rhs)) {
         const rez: Blade<T>[] = [];
         rez.push(blade(0, lhs, adapter));
         for (let k = 0; k < rhs.blades.length; k++) {
             rez.push(rhs.blades[k]);
         }
-        return mv(simplify(rez, adapter), metric, adapter);
+        return mv(simplify(rez, adapter), metric, adapter, labels);
     }
     else if (isMultivector(lhs) && adapter.isField(rhs)) {
         const rez: Blade<T>[] = [];
@@ -131,7 +134,7 @@ function add<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
         for (let k = 0; k < lhs.blades.length; k++) {
             rez.push(lhs.blades[k]);
         }
-        return mv(simplify(rez, adapter), metric, adapter);
+        return mv(simplify(rez, adapter), metric, adapter, labels);
     }
     else {
         if (isMultivector(lhs) && isMultivector(rhs)) {
@@ -142,7 +145,7 @@ function add<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
             for (let k = 0; k < rhs.blades.length; k++) {
                 rez.push(rhs.blades[k]);
             }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return mv(simplify(rez, adapter), metric, adapter, labels);
         }
         else {
             // We'll be using this function for operator overloading.
@@ -151,14 +154,14 @@ function add<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
     }
 }
 
-function sub<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+function sub<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>, labels: string[]): Multivector<T> {
     if (adapter.isField(lhs) && isMultivector(rhs)) {
         const rez: Blade<T>[] = [];
         rez.push(blade(0, lhs, adapter));
         for (let k = 0; k < rhs.blades.length; k++) {
             rez.push(rhs.blades[k].__neg__());
         }
-        return mv(simplify(rez, adapter), metric, adapter);
+        return mv(simplify(rez, adapter), metric, adapter, labels);
     }
     else if (isMultivector(lhs) && adapter.isField(rhs)) {
         const rez: Blade<T>[] = [];
@@ -166,7 +169,7 @@ function sub<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
         for (let k = 0; k < lhs.blades.length; k++) {
             rez.push(lhs.blades[k]);
         }
-        return mv(simplify(rez, adapter), metric, adapter);
+        return mv(simplify(rez, adapter), metric, adapter, labels);
     }
     else {
         if (isMultivector(lhs) && isMultivector(rhs)) {
@@ -177,7 +180,7 @@ function sub<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
             for (let k = 0; k < rhs.blades.length; k++) {
                 rez.push(rhs.blades[k].__neg__());
             }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return mv(simplify(rez, adapter), metric, adapter, labels);
         }
         else {
             // We'll be using this function for operator overloading.
@@ -186,7 +189,7 @@ function sub<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
     }
 }
 
-function mul<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+function mul<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>, labels: string[]): Multivector<T> {
     if (adapter.isField(lhs) && isMultivector(rhs)) {
         return rhs.mulByScalar(lhs);
     }
@@ -216,7 +219,7 @@ function mul<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
                     }
                 }
             }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return mv(simplify(rez, adapter), metric, adapter, labels);
         }
         else {
             // We'll be using this function for operator overloading.
@@ -246,26 +249,26 @@ function div<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
 /**
  * Returns the basis vector with index in the integer range [0 ... dim)
  */
-function getBasisVector<T>(index: number, metric: number | number[] | Metric<T>, field: FieldAdapter<T>): Multivector<T> {
+function getBasisVector<T>(index: number, metric: number | number[] | Metric<T>, field: FieldAdapter<T>, labels: string[]): Multivector<T> {
     mustBeInteger('index', index);
     mustBeDefined('metric', metric);
     mustBeDefined('field', field);
     const B = blade(1 << index, field.one, field);
-    return mv<T>([B], metric, field);
+    return mv<T>([B], metric, field, labels);
 }
 
 /**
  * Returns a scalar Multivector.
  */
-function getScalar<T>(weight: T, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+function getScalar<T>(weight: T, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>, labels: string[]): Multivector<T> {
     mustBeDefined('metric', metric);
     mustBeDefined('adapter', adapter);
     mustSatisfy('weight', adapter.isField(weight), () => { return `be a field value`; });
     const B = blade(0, weight, adapter);
-    return mv<T>([B], metric, adapter);
+    return mv<T>([B], metric, adapter, labels);
 }
 
-function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>) {
+function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>, labels: string[]) {
     if (!isArray(blades)) {
         throw new Error("blades must be Blade<T>[]");
     }
@@ -283,29 +286,29 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                 rez.push(B);
             }
         }
-        return mv(rez, metric, adapter);
+        return mv(rez, metric, adapter, labels);
     };
     const that: Multivector<T> = {
         get blades() {
             return blades;
         },
         add(rhs: Multivector<T>): Multivector<T> {
-            return add(that, rhs, metric, adapter);
+            return add(that, rhs, metric, adapter, labels);
         },
         __add__(rhs: Multivector<T>): Multivector<T> {
-            return add(that, rhs, metric, adapter);
+            return add(that, rhs, metric, adapter, labels);
         },
         __radd__(lhs: Multivector<T>): Multivector<T> {
-            return add(lhs, that, metric, adapter);
+            return add(lhs, that, metric, adapter, labels);
         },
         sub(rhs: Multivector<T>): Multivector<T> {
-            return sub(that, rhs, metric, adapter);
+            return sub(that, rhs, metric, adapter, labels);
         },
         __sub__(rhs: Multivector<T>): Multivector<T> {
-            return sub(that, rhs, metric, adapter);
+            return sub(that, rhs, metric, adapter, labels);
         },
         __rsub__(lhs: Multivector<T>): Multivector<T> {
-            return sub(lhs, that, metric, adapter);
+            return sub(lhs, that, metric, adapter, labels);
         },
         inv(): Multivector<T> {
             // We'll start by trying the versor inverse before doing the general inverse.
@@ -323,7 +326,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
             return blades.length === 0;
         },
         mul(rhs: Multivector<T>): Multivector<T> {
-            return mul(that, rhs, metric, adapter);
+            return mul(that, rhs, metric, adapter, labels);
         },
         mulByScalar(α: T): Multivector<T> {
             const rez: Blade<T>[] = [];
@@ -334,13 +337,13 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                     rez.push(blade(B.bitmap, scale, adapter));
                 }
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         __mul__(rhs: T | Multivector<T>): Multivector<T> {
-            return mul(that, rhs, metric, adapter);
+            return mul(that, rhs, metric, adapter, labels);
         },
         __rmul__(lhs: T | Multivector<T>): Multivector<T> {
-            return mul(lhs, that, metric, adapter);
+            return mul(lhs, that, metric, adapter, labels);
         },
         __div__(rhs: T | Multivector<T>): Multivector<T> {
             return div(that, rhs, metric, adapter);
@@ -367,7 +370,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                     }
                 }
             }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return mv(simplify(rez, adapter), metric, adapter, labels);
         },
         __rshift__(rhs: Multivector<T>): Multivector<T> {
             const rez: Blade<T>[] = [];
@@ -391,7 +394,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                     }
                 }
             }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return mv(simplify(rez, adapter), metric, adapter, labels);
         },
         __vbar__(rhs: Multivector<T>): Multivector<T> {
             // Use the definition of the scalar product in terms of the geometric product.
@@ -407,7 +410,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                     rez.push(B);
                 }
             }
-            return mv(simplify(rez, adapter), metric, adapter);
+            return mv(simplify(rez, adapter), metric, adapter, labels);
         },
         __bang__(): Multivector<T> {
             return that.inv();
@@ -421,7 +424,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                 const B = blades[i];
                 rez.push(B.__neg__());
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         __neg__(): Multivector<T> {
             const rez: Blade<T>[] = [];
@@ -429,7 +432,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                 const B = blades[i];
                 rez.push(B.__neg__());
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         __tilde__(): Multivector<T> {
             return that.rev();
@@ -440,7 +443,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                 const B = blades[i];
                 rez.push(B.cliffordConjugate());
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         compress(fraction = 1e-12): Multivector<T> {
             let eps = adapter.mulByNumber(adapter.one, fraction);
@@ -458,10 +461,10 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                     rez.push(B);
                 }
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         direction(): Multivector<T> {
-            const squaredNorm = that.scp(that.rev());
+            const squaredNorm = that.scp(that.rev()).scalarCoordinate();
             const norm = adapter.sqrt(squaredNorm);
             if (!adapter.isZero(norm)) {
                 return that.divByScalar(norm);
@@ -476,8 +479,8 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
             const Brev = B.rev();
             const θ = adapter.sqrt(B.__vbar__(Brev).scalarCoordinate());
             const i = B.divByScalar(θ);
-            const cosθ = mv([blade(0, adapter.cos(θ), adapter)], metric, adapter);
-            const sinθ = mv([blade(0, adapter.sin(θ), adapter)], metric, adapter);
+            const cosθ = mv([blade(0, adapter.cos(θ), adapter)], metric, adapter, labels);
+            const sinθ = mv([blade(0, adapter.sin(θ), adapter)], metric, adapter, labels);
             return cosθ.__add__(i.__mul__(sinθ));
         },
         extractGrade,
@@ -493,11 +496,11 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                     rez.push(blade(B.bitmap, scale, adapter));
                 }
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         dual(): Multivector<T> {
             const n = dim(metric);
-            const I = mv([blade((1 << n) - 1, adapter.one, adapter)], metric, adapter);
+            const I = mv([blade((1 << n) - 1, adapter.one, adapter)], metric, adapter, labels);
             return that.__lshift__(I);
         },
         gradeInversion(): Multivector<T> {
@@ -506,7 +509,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                 const B = blades[i];
                 rez.push(B.gradeInversion());
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         rev(): Multivector<T> {
             const rez: Blade<T>[] = [];
@@ -514,7 +517,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                 const B = blades[i];
                 rez.push(B.reverse());
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         },
         scalarCoordinate(): T {
             for (let i = 0; i < blades.length; i++) {
@@ -525,10 +528,26 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
             }
             return adapter.zero;
         },
-        scp(rhs: Multivector<T>): T {
-            return that.__vbar__(rhs).scalarCoordinate();
+        scp(rhs: Multivector<T>): Multivector<T> {
+            return that.__vbar__(rhs);
+        },
+        sqrt(): Multivector<T> {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                if (B.bitmap === 0) {
+                    rez.push(blade(B.bitmap, adapter.sqrt(B.weight), adapter));
+                }
+                else {
+                    throw new Error(`sqrt on arbitrary multivectors is not yet supported.`);
+                }
+            }
+            return mv(rez, metric, adapter, labels);
         },
         asString(names: string[]): string {
+
+            checkBasisLabels('names', names, dim(metric));
+
             if (blades.length === 0) {
                 return "0";
             }
@@ -541,6 +560,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
                         result += s;
                     }
                     else {
+                        // TODO: Fix this hackery...
                         if (s.charAt(0) === '-') {
                             result += ' - ';
                             result += s.substring(1);
@@ -555,7 +575,7 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
             }
         },
         toString(): string {
-            return that.asString(void 0);
+            return that.asString(labels);
         }
     };
     return that;
@@ -569,22 +589,51 @@ export interface Algebra<T> {
      * Honoring Grassmann, who called the basis vectors "units".
      */
     unit(index: number): Multivector<T>;
+    /**
+     * 
+     */
+    units: Multivector<T>[];
+}
+
+/**
+ * Verify that the basis vector labels are strings and that there are the correct number.
+ */
+function checkBasisLabels(name: string, labels: string[], n: number): void {
+    if (isDefined(labels)) {
+        if (isArray(labels)) {
+            if (labels.length !== n) {
+                throw new Error(`${name}.length must match the dimensionality of the vector space.`);
+            }
+            for (let i = 0; i < labels.length; i++) {
+                const label = labels[i];
+                if (!isString(label)) {
+                    throw new Error(`${name}[${i}] must be a string.`);
+                }
+            }
+        }
+        else {
+            throw new Error(`${name} must be a string[]`);
+        }
+    }
 }
 
 export function algebra<T>(metric: number | number[] | Metric<T>, field: FieldAdapter<T>, labels?: string[]): Algebra<T> {
     mustBeDefined('metric', metric);
+    const n = dim(metric);
+
     mustBeDefined('field', field);
 
-    const scalarOne = getScalar(field.one, metric, field);
-    const scalarZero = getScalar(field.zero, metric, field);
+    checkBasisLabels('labels', labels, n);
+
+    const scalarOne = getScalar(field.one, metric, field, labels);
+    const scalarZero = getScalar(field.zero, metric, field, labels);
 
     /**
      * A cache of the basis vectors.
      */
-    const units: Multivector<T>[] = [];
-    const n = dim(metric);
+    const basisVectors: Multivector<T>[] = [];
     for (let i = 0; i < n; i++) {
-        units[i] = getBasisVector(i, metric, field);
+        basisVectors[i] = getBasisVector(i, metric, field, labels);
     }
 
     const that: Algebra<T> = {
@@ -600,11 +649,15 @@ export function algebra<T>(metric: number | number[] | Metric<T>, field: FieldAd
         unit(index: number) {
             mustBeInteger('index', index);
             if (index >= 0 && index < n) {
-                return units[index];
+                return basisVectors[index];
             }
             else {
-                throw new Error(`index must be in range [1 ... ${n})`);
+                throw new Error(`index must be in range [0 ... ${n - 1})`);
             }
+        },
+        get units(): Multivector<T>[] {
+            // For safety, return a copy of the cached array of basis vectors.
+            return basisVectors.map(x => x);
         }
     };
     return that;

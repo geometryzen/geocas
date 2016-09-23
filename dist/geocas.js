@@ -2469,6 +2469,12 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", './Complex', '
         ComplexFieldAdapter.prototype.add = function (lhs, rhs) {
             return lhs.__add__(rhs);
         };
+        ComplexFieldAdapter.prototype.eq = function (lhs, rhs) {
+            return lhs.x === rhs.x && lhs.y === rhs.y;
+        };
+        ComplexFieldAdapter.prototype.ne = function (lhs, rhs) {
+            return lhs.x !== rhs.x || lhs.y !== rhs.y;
+        };
         ComplexFieldAdapter.prototype.le = function (lhs, rhs) {
             return lhs.x <= rhs.x;
         };
@@ -2486,6 +2492,9 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", './Complex', '
         };
         ComplexFieldAdapter.prototype.max = function (lhs, rhs) {
             return (lhs.x >= rhs.x) ? lhs : rhs;
+        };
+        ComplexFieldAdapter.prototype.min = function (lhs, rhs) {
+            return (lhs.x <= rhs.x) ? lhs : rhs;
         };
         ComplexFieldAdapter.prototype.mul = function (lhs, rhs) {
             return lhs.__mul__(rhs);
@@ -2560,6 +2569,35 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", './Complex', '
     exports.default = ComplexFieldAdapter;
 });
 
+define('geocas/mother/squaredNorm',["require", "exports"], function (require, exports) {
+    "use strict";
+    function squaredNorm(A) {
+        return A.scp(A.rev());
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = squaredNorm;
+});
+
+define('geocas/mother/norm',["require", "exports", './squaredNorm'], function (require, exports, squaredNorm_1) {
+    "use strict";
+    function norm(A) {
+        return squaredNorm_1.default(A).sqrt();
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = norm;
+});
+
+define('geocas/mother/cosineOfAngleBetweenBlades',["require", "exports", './norm'], function (require, exports, norm_1) {
+    "use strict";
+    function cos(A, B) {
+        var a = norm_1.default(A).scalarCoordinate();
+        var b = norm_1.default(B).scalarCoordinate();
+        return A.scp(B.rev()).divByScalar(a).divByScalar(b);
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = cos;
+});
+
 define('geocas/mother/NumberFieldAdapter',["require", "exports"], function (require, exports) {
     "use strict";
     var NumberFieldAdapter = (function () {
@@ -2570,6 +2608,12 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports"], function (requ
         };
         NumberFieldAdapter.prototype.add = function (lhs, rhs) {
             return lhs + rhs;
+        };
+        NumberFieldAdapter.prototype.eq = function (lhs, rhs) {
+            return lhs === rhs;
+        };
+        NumberFieldAdapter.prototype.ne = function (lhs, rhs) {
+            return lhs !== rhs;
         };
         NumberFieldAdapter.prototype.le = function (lhs, rhs) {
             return lhs <= rhs;
@@ -2588,6 +2632,9 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports"], function (requ
         };
         NumberFieldAdapter.prototype.max = function (lhs, rhs) {
             return Math.max(lhs, rhs);
+        };
+        NumberFieldAdapter.prototype.min = function (lhs, rhs) {
+            return Math.min(lhs, rhs);
         };
         NumberFieldAdapter.prototype.mul = function (lhs, rhs) {
             return lhs * rhs;
@@ -2642,7 +2689,7 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports"], function (requ
     exports.default = NumberFieldAdapter;
 });
 
-define('geocas/mother/orthoFramesToVersor',["require", "exports"], function (require, exports) {
+define('geocas/mother/orthoFramesToVersor',["require", "exports", './cosineOfAngleBetweenBlades'], function (require, exports, cosineOfAngleBetweenBlades_1) {
     "use strict";
     function orthoFramesToVersor(A, B, vs, algebra) {
         if (A.length > 0) {
@@ -2652,13 +2699,13 @@ define('geocas/mother/orthoFramesToVersor',["require", "exports"], function (req
             var e_1 = a.sub(b);
             var field = algebra.field;
             var eps = field.mulByNumber(field.one, 1e-6);
-            var cosMinusOne = cos(a, b, algebra).sub(algebra.one).scalarCoordinate();
+            var cosMinusOne = cosineOfAngleBetweenBlades_1.default(a, b).sub(algebra.one).scalarCoordinate();
             var tooClose = field.lt(field.abs(cosMinusOne), eps);
             if (tooClose) {
                 return orthoFramesToVersor(removeAt(A, j), removeAt(B, j), vs, algebra);
             }
             else {
-                var e2_1 = e_1.scp(e_1);
+                var e2_1 = e_1.scp(e_1).scalarCoordinate();
                 var rvs = prepend(vs, e_1.divByScalar(algebra.field.sqrt(e2_1)));
                 return orthoFramesToVersor(removeAt(A, j).map(function (x) { return e_1.mul(x.mul(e_1)).neg().divByScalar(e2_1); }), removeAt(B, j), rvs, algebra);
             }
@@ -2677,11 +2724,6 @@ define('geocas/mother/orthoFramesToVersor',["require", "exports"], function (req
         }
         return result;
     }
-    function cos(A, B, algebra) {
-        var a = algebra.field.sqrt(A.__vbar__(A.rev()).scalarCoordinate());
-        var b = algebra.field.sqrt(B.__vbar__(B.rev()).scalarCoordinate());
-        return A.__vbar__(B.rev()).divByScalar(a).divByScalar(b);
-    }
     function removeAt(xs, index) {
         var result = [];
         for (var i = 0; i < xs.length; i++) {
@@ -2697,7 +2739,7 @@ define('geocas/mother/orthoFramesToVersor',["require", "exports"], function (req
         var idx = 0;
         for (var k = 0; k < N; k++) {
             var x = A[k].sub(B[k]);
-            var squaredNorm = x.scp(x.rev());
+            var squaredNorm = x.scp(x.rev()).scalarCoordinate();
             if (algebra.field.gt(squaredNorm, max.scalarCoordinate())) {
                 idx = k;
             }
@@ -2961,6 +3003,24 @@ define('geocas/checks/isArray',["require", "exports"], function (require, export
     exports.default = isArray;
 });
 
+define('geocas/checks/isDefined',["require", "exports"], function (require, exports) {
+    "use strict";
+    function isDefined(arg) {
+        return (typeof arg !== 'undefined');
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = isDefined;
+});
+
+define('geocas/checks/isString',["require", "exports"], function (require, exports) {
+    "use strict";
+    function isString(s) {
+        return (typeof s === 'string');
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = isString;
+});
+
 define('geocas/checks/mustSatisfy',["require", "exports"], function (require, exports) {
     "use strict";
     function mustSatisfy(name, condition, messageBuilder, contextBuilder) {
@@ -2972,15 +3032,6 @@ define('geocas/checks/mustSatisfy',["require", "exports"], function (require, ex
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = mustSatisfy;
-});
-
-define('geocas/checks/isDefined',["require", "exports"], function (require, exports) {
-    "use strict";
-    function isDefined(arg) {
-        return (typeof arg !== 'undefined');
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = isDefined;
 });
 
 define('geocas/checks/mustBeDefined',["require", "exports", '../checks/mustSatisfy', '../checks/isDefined'], function (require, exports, mustSatisfy_1, isDefined_1) {
@@ -3018,7 +3069,7 @@ define('geocas/checks/mustBeInteger',["require", "exports", '../checks/mustSatis
     exports.default = mustBeInteger;
 });
 
-define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', './gpL', './gpG', './lcoE', './lcoL', './lcoG', './rcoE', './rcoL', './rcoG', '../checks/isArray', '../checks/isNumber', '../checks/isUndefined', '../checks/mustBeDefined', '../checks/mustBeInteger', '../checks/mustSatisfy', './simplify'], function (require, exports, Blade_1, gpE_1, gpL_1, gpG_1, lcoE_1, lcoL_1, lcoG_1, rcoE_1, rcoL_1, rcoG_1, isArray_1, isNumber_1, isUndefined_1, mustBeDefined_1, mustBeInteger_1, mustSatisfy_1, simplify_1) {
+define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', './gpL', './gpG', './lcoE', './lcoL', './lcoG', './rcoE', './rcoL', './rcoG', '../checks/isArray', '../checks/isDefined', '../checks/isNumber', '../checks/isString', '../checks/isUndefined', '../checks/mustBeDefined', '../checks/mustBeInteger', '../checks/mustSatisfy', './simplify'], function (require, exports, Blade_1, gpE_1, gpL_1, gpG_1, lcoE_1, lcoL_1, lcoG_1, rcoE_1, rcoL_1, rcoG_1, isArray_1, isDefined_1, isNumber_1, isString_1, isUndefined_1, mustBeDefined_1, mustBeInteger_1, mustSatisfy_1, simplify_1) {
     "use strict";
     function isMultivector(arg) {
         if (arg) {
@@ -3048,14 +3099,14 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
             throw new Error("metric is undefined");
         }
     }
-    function add(lhs, rhs, metric, adapter) {
+    function add(lhs, rhs, metric, adapter, labels) {
         if (adapter.isField(lhs) && isMultivector(rhs)) {
             var rez = [];
             rez.push(Blade_1.default(0, lhs, adapter));
             for (var k = 0; k < rhs.blades.length; k++) {
                 rez.push(rhs.blades[k]);
             }
-            return mv(simplify_1.default(rez, adapter), metric, adapter);
+            return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
         }
         else if (isMultivector(lhs) && adapter.isField(rhs)) {
             var rez = [];
@@ -3063,7 +3114,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
             for (var k = 0; k < lhs.blades.length; k++) {
                 rez.push(lhs.blades[k]);
             }
-            return mv(simplify_1.default(rez, adapter), metric, adapter);
+            return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
         }
         else {
             if (isMultivector(lhs) && isMultivector(rhs)) {
@@ -3074,21 +3125,21 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                 for (var k = 0; k < rhs.blades.length; k++) {
                     rez.push(rhs.blades[k]);
                 }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
             }
             else {
                 return void 0;
             }
         }
     }
-    function sub(lhs, rhs, metric, adapter) {
+    function sub(lhs, rhs, metric, adapter, labels) {
         if (adapter.isField(lhs) && isMultivector(rhs)) {
             var rez = [];
             rez.push(Blade_1.default(0, lhs, adapter));
             for (var k = 0; k < rhs.blades.length; k++) {
                 rez.push(rhs.blades[k].__neg__());
             }
-            return mv(simplify_1.default(rez, adapter), metric, adapter);
+            return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
         }
         else if (isMultivector(lhs) && adapter.isField(rhs)) {
             var rez = [];
@@ -3096,7 +3147,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
             for (var k = 0; k < lhs.blades.length; k++) {
                 rez.push(lhs.blades[k]);
             }
-            return mv(simplify_1.default(rez, adapter), metric, adapter);
+            return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
         }
         else {
             if (isMultivector(lhs) && isMultivector(rhs)) {
@@ -3107,14 +3158,14 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                 for (var k = 0; k < rhs.blades.length; k++) {
                     rez.push(rhs.blades[k].__neg__());
                 }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
             }
             else {
                 return void 0;
             }
         }
     }
-    function mul(lhs, rhs, metric, adapter) {
+    function mul(lhs, rhs, metric, adapter, labels) {
         if (adapter.isField(lhs) && isMultivector(rhs)) {
             return rhs.mulByScalar(lhs);
         }
@@ -3144,7 +3195,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         }
                     }
                 }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
             }
             else {
                 return void 0;
@@ -3167,21 +3218,21 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
             }
         }
     }
-    function getBasisVector(index, metric, field) {
+    function getBasisVector(index, metric, field, labels) {
         mustBeInteger_1.default('index', index);
         mustBeDefined_1.default('metric', metric);
         mustBeDefined_1.default('field', field);
         var B = Blade_1.default(1 << index, field.one, field);
-        return mv([B], metric, field);
+        return mv([B], metric, field, labels);
     }
-    function getScalar(weight, metric, adapter) {
+    function getScalar(weight, metric, adapter, labels) {
         mustBeDefined_1.default('metric', metric);
         mustBeDefined_1.default('adapter', adapter);
         mustSatisfy_1.default('weight', adapter.isField(weight), function () { return "be a field value"; });
         var B = Blade_1.default(0, weight, adapter);
-        return mv([B], metric, adapter);
+        return mv([B], metric, adapter, labels);
     }
-    function mv(blades, metric, adapter) {
+    function mv(blades, metric, adapter, labels) {
         if (!isArray_1.default(blades)) {
             throw new Error("blades must be Blade<T>[]");
         }
@@ -3199,29 +3250,29 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     rez.push(B);
                 }
             }
-            return mv(rez, metric, adapter);
+            return mv(rez, metric, adapter, labels);
         };
         var that = {
             get blades() {
                 return blades;
             },
             add: function (rhs) {
-                return add(that, rhs, metric, adapter);
+                return add(that, rhs, metric, adapter, labels);
             },
             __add__: function (rhs) {
-                return add(that, rhs, metric, adapter);
+                return add(that, rhs, metric, adapter, labels);
             },
             __radd__: function (lhs) {
-                return add(lhs, that, metric, adapter);
+                return add(lhs, that, metric, adapter, labels);
             },
             sub: function (rhs) {
-                return sub(that, rhs, metric, adapter);
+                return sub(that, rhs, metric, adapter, labels);
             },
             __sub__: function (rhs) {
-                return sub(that, rhs, metric, adapter);
+                return sub(that, rhs, metric, adapter, labels);
             },
             __rsub__: function (lhs) {
-                return sub(lhs, that, metric, adapter);
+                return sub(lhs, that, metric, adapter, labels);
             },
             inv: function () {
                 var reverse = that.rev();
@@ -3237,7 +3288,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                 return blades.length === 0;
             },
             mul: function (rhs) {
-                return mul(that, rhs, metric, adapter);
+                return mul(that, rhs, metric, adapter, labels);
             },
             mulByScalar: function (α) {
                 var rez = [];
@@ -3248,13 +3299,13 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         rez.push(Blade_1.default(B.bitmap, scale, adapter));
                     }
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             __mul__: function (rhs) {
-                return mul(that, rhs, metric, adapter);
+                return mul(that, rhs, metric, adapter, labels);
             },
             __rmul__: function (lhs) {
-                return mul(lhs, that, metric, adapter);
+                return mul(lhs, that, metric, adapter, labels);
             },
             __div__: function (rhs) {
                 return div(that, rhs, metric, adapter);
@@ -3281,7 +3332,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         }
                     }
                 }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
             },
             __rshift__: function (rhs) {
                 var rez = [];
@@ -3305,7 +3356,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         }
                     }
                 }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
             },
             __vbar__: function (rhs) {
                 return that.__mul__(rhs).extractGrade(0);
@@ -3320,7 +3371,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         rez.push(B);
                     }
                 }
-                return mv(simplify_1.default(rez, adapter), metric, adapter);
+                return mv(simplify_1.default(rez, adapter), metric, adapter, labels);
             },
             __bang__: function () {
                 return that.inv();
@@ -3334,7 +3385,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     var B = blades[i];
                     rez.push(B.__neg__());
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             __neg__: function () {
                 var rez = [];
@@ -3342,7 +3393,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     var B = blades[i];
                     rez.push(B.__neg__());
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             __tilde__: function () {
                 return that.rev();
@@ -3353,7 +3404,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     var B = blades[i];
                     rez.push(B.cliffordConjugate());
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             compress: function (fraction) {
                 if (fraction === void 0) { fraction = 1e-12; }
@@ -3371,10 +3422,10 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         rez.push(B);
                     }
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             direction: function () {
-                var squaredNorm = that.scp(that.rev());
+                var squaredNorm = that.scp(that.rev()).scalarCoordinate();
                 var norm = adapter.sqrt(squaredNorm);
                 if (!adapter.isZero(norm)) {
                     return that.divByScalar(norm);
@@ -3388,8 +3439,8 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                 var Brev = B.rev();
                 var θ = adapter.sqrt(B.__vbar__(Brev).scalarCoordinate());
                 var i = B.divByScalar(θ);
-                var cosθ = mv([Blade_1.default(0, adapter.cos(θ), adapter)], metric, adapter);
-                var sinθ = mv([Blade_1.default(0, adapter.sin(θ), adapter)], metric, adapter);
+                var cosθ = mv([Blade_1.default(0, adapter.cos(θ), adapter)], metric, adapter, labels);
+                var sinθ = mv([Blade_1.default(0, adapter.sin(θ), adapter)], metric, adapter, labels);
                 return cosθ.__add__(i.__mul__(sinθ));
             },
             extractGrade: extractGrade,
@@ -3405,11 +3456,11 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                         rez.push(Blade_1.default(B.bitmap, scale, adapter));
                     }
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             dual: function () {
                 var n = dim(metric);
-                var I = mv([Blade_1.default((1 << n) - 1, adapter.one, adapter)], metric, adapter);
+                var I = mv([Blade_1.default((1 << n) - 1, adapter.one, adapter)], metric, adapter, labels);
                 return that.__lshift__(I);
             },
             gradeInversion: function () {
@@ -3418,7 +3469,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     var B = blades[i];
                     rez.push(B.gradeInversion());
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             rev: function () {
                 var rez = [];
@@ -3426,7 +3477,7 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                     var B = blades[i];
                     rez.push(B.reverse());
                 }
-                return mv(rez, metric, adapter);
+                return mv(rez, metric, adapter, labels);
             },
             scalarCoordinate: function () {
                 for (var i = 0; i < blades.length; i++) {
@@ -3438,9 +3489,23 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                 return adapter.zero;
             },
             scp: function (rhs) {
-                return that.__vbar__(rhs).scalarCoordinate();
+                return that.__vbar__(rhs);
+            },
+            sqrt: function () {
+                var rez = [];
+                for (var i = 0; i < blades.length; i++) {
+                    var B = blades[i];
+                    if (B.bitmap === 0) {
+                        rez.push(Blade_1.default(B.bitmap, adapter.sqrt(B.weight), adapter));
+                    }
+                    else {
+                        throw new Error("sqrt on arbitrary multivectors is not yet supported.");
+                    }
+                }
+                return mv(rez, metric, adapter, labels);
             },
             asString: function (names) {
+                checkBasisLabels('names', names, dim(metric));
                 if (blades.length === 0) {
                     return "0";
                 }
@@ -3467,20 +3532,39 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
                 }
             },
             toString: function () {
-                return that.asString(void 0);
+                return that.asString(labels);
             }
         };
         return that;
     }
+    function checkBasisLabels(name, labels, n) {
+        if (isDefined_1.default(labels)) {
+            if (isArray_1.default(labels)) {
+                if (labels.length !== n) {
+                    throw new Error(name + ".length must match the dimensionality of the vector space.");
+                }
+                for (var i = 0; i < labels.length; i++) {
+                    var label = labels[i];
+                    if (!isString_1.default(label)) {
+                        throw new Error(name + "[" + i + "] must be a string.");
+                    }
+                }
+            }
+            else {
+                throw new Error(name + " must be a string[]");
+            }
+        }
+    }
     function algebra(metric, field, labels) {
         mustBeDefined_1.default('metric', metric);
-        mustBeDefined_1.default('field', field);
-        var scalarOne = getScalar(field.one, metric, field);
-        var scalarZero = getScalar(field.zero, metric, field);
-        var units = [];
         var n = dim(metric);
+        mustBeDefined_1.default('field', field);
+        checkBasisLabels('labels', labels, n);
+        var scalarOne = getScalar(field.one, metric, field, labels);
+        var scalarZero = getScalar(field.zero, metric, field, labels);
+        var basisVectors = [];
         for (var i = 0; i < n; i++) {
-            units[i] = getBasisVector(i, metric, field);
+            basisVectors[i] = getBasisVector(i, metric, field, labels);
         }
         var that = {
             get field() {
@@ -3495,11 +3579,14 @@ define('geocas/mother/Multivector',["require", "exports", './Blade', './gpE', '.
             unit: function (index) {
                 mustBeInteger_1.default('index', index);
                 if (index >= 0 && index < n) {
-                    return units[index];
+                    return basisVectors[index];
                 }
                 else {
-                    throw new Error("index must be in range [1 ... " + n + ")");
+                    throw new Error("index must be in range [0 ... " + (n - 1) + ")");
                 }
+            },
+            get units() {
+                return basisVectors.map(function (x) { return x; });
             }
         };
         return that;
@@ -3514,7 +3601,7 @@ define('geocas/config',["require", "exports"], function (require, exports) {
             this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
             this.LAST_MODIFIED = '2016-09-23';
             this.NAMESPACE = 'GeoCAS';
-            this.VERSION = '1.7.0';
+            this.VERSION = '1.8.0';
         }
         GeoCAS.prototype.log = function (message) {
             var optionalParams = [];
@@ -3551,7 +3638,7 @@ define('geocas/config',["require", "exports"], function (require, exports) {
     exports.default = config;
 });
 
-define('geocas',["require", "exports", './geocas/math/BigInteger', './geocas/math/BigRational', './geocas/mother/Blade', './geocas/mother/Complex', './geocas/mother/ComplexFieldAdapter', './geocas/mother/NumberFieldAdapter', './geocas/mother/orthoFramesToVersor', './geocas/mother/Multivector', './geocas/config'], function (require, exports, BigInteger_1, BigRational_1, Blade_1, Complex_1, ComplexFieldAdapter_1, NumberFieldAdapter_1, orthoFramesToVersor_1, Multivector_1, config_1) {
+define('geocas',["require", "exports", './geocas/math/BigInteger', './geocas/math/BigRational', './geocas/mother/Blade', './geocas/mother/Complex', './geocas/mother/ComplexFieldAdapter', './geocas/mother/cosineOfAngleBetweenBlades', './geocas/mother/norm', './geocas/mother/NumberFieldAdapter', './geocas/mother/orthoFramesToVersor', './geocas/mother/Multivector', './geocas/config', './geocas/mother/squaredNorm'], function (require, exports, BigInteger_1, BigRational_1, Blade_1, Complex_1, ComplexFieldAdapter_1, cosineOfAngleBetweenBlades_1, norm_1, NumberFieldAdapter_1, orthoFramesToVersor_1, Multivector_1, config_1, squaredNorm_1) {
     "use strict";
     var GeoCAS = {
         get LAST_MODIFIED() { return config_1.default.LAST_MODIFIED; },
@@ -3561,9 +3648,12 @@ define('geocas',["require", "exports", './geocas/math/BigInteger', './geocas/mat
         get blade() { return Blade_1.default; },
         get complex() { return Complex_1.default; },
         get ComplexFieldAdapter() { return ComplexFieldAdapter_1.default; },
+        get cosineOfAngleBetweenBlades() { return cosineOfAngleBetweenBlades_1.default; },
+        get norm() { return norm_1.default; },
         get NumberFieldAdapter() { return NumberFieldAdapter_1.default; },
         get orthoFramesToVersor() { return orthoFramesToVersor_1.default; },
-        get algebra() { return Multivector_1.algebra; }
+        get algebra() { return Multivector_1.algebra; },
+        get squaredNorm() { return squaredNorm_1.default; }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = GeoCAS;

@@ -11,6 +11,12 @@ export default class FloatAdapter implements FieldAdapter<Float> {
     sub(lhs: Float, rhs: Float): Float {
         return new Float(lhs.value - rhs.value);
     }
+    eq(lhs: Float, rhs: Float): boolean {
+        return lhs.value === rhs.value;
+    }
+    ne(lhs: Float, rhs: Float): boolean {
+        return lhs.value !== rhs.value;
+    }
     le(lhs: Float, rhs: Float): boolean {
         return lhs.value <= rhs.value;
     }
@@ -25,6 +31,9 @@ export default class FloatAdapter implements FieldAdapter<Float> {
     }
     max(lhs: Float, rhs: Float): Float {
         return lhs.value >= rhs.value ? lhs : rhs;
+    }
+    min(lhs: Float, rhs: Float): Float {
+        return lhs.value <= rhs.value ? lhs : rhs;
     }
     mul(lhs: Float, rhs: Float): Float {
         return new Float(lhs.value * rhs.value);

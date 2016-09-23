@@ -7,6 +7,12 @@ export default class NumberFieldAdapter implements FieldAdapter<number> {
     add(lhs: number, rhs: number): number {
         return lhs + rhs;
     }
+    eq(lhs: number, rhs: number): boolean {
+        return lhs === rhs;
+    }
+    ne(lhs: number, rhs: number): boolean {
+        return lhs !== rhs;
+    }
     le(lhs: number, rhs: number): boolean {
         return lhs <= rhs;
     }
@@ -24,6 +30,9 @@ export default class NumberFieldAdapter implements FieldAdapter<number> {
     }
     max(lhs: number, rhs: number): number {
         return Math.max(lhs, rhs);
+    }
+    min(lhs: number, rhs: number): number {
+        return Math.min(lhs, rhs);
     }
     mul(lhs: number, rhs: number): number {
         return lhs * rhs;
