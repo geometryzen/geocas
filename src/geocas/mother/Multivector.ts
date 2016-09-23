@@ -50,6 +50,11 @@ export interface Multivector<T> {
     add(rhs: Multivector<T>): Multivector<T>;
     asString(names: string[]): string;
     cliffordConjugate(): Multivector<T>;
+    compress(fraction?: number): Multivector<T>;
+    /**
+     * direction(M) = M / sqrt(M * ~M)
+     */
+    direction(): Multivector<T>;
     div(rhs: Multivector<T>): Multivector<T>;
     divByScalar(α: T): Multivector<T>;
     /**
@@ -63,8 +68,10 @@ export interface Multivector<T> {
     extractGrade(grade: number): Multivector<T>;
     gradeInversion(): Multivector<T>;
     inv(): Multivector<T>;
+    isZero(): boolean;
     mul(rhs: Multivector<T>): Multivector<T>;
     mulByScalar(α: T): Multivector<T>;
+    neg(): Multivector<T>;
     rev(): Multivector<T>;
     scalarCoordinate(): T;
     /**
@@ -239,18 +246,18 @@ function div<T>(lhs: T | Multivector<T>, rhs: T | Multivector<T>, metric: number
 /**
  * Returns the basis vector with index in the integer range [0 ... dim)
  */
-export function getBasisVector<T>(index: number, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+function getBasisVector<T>(index: number, metric: number | number[] | Metric<T>, field: FieldAdapter<T>): Multivector<T> {
     mustBeInteger('index', index);
     mustBeDefined('metric', metric);
-    mustBeDefined('adapter', adapter);
-    const B = blade(1 << index, adapter.one(), adapter);
-    return mv<T>([B], metric, adapter);
+    mustBeDefined('field', field);
+    const B = blade(1 << index, field.one, field);
+    return mv<T>([B], metric, field);
 }
 
 /**
  * Returns a scalar Multivector.
  */
-export function getScalar<T>(weight: T, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
+function getScalar<T>(weight: T, metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>): Multivector<T> {
     mustBeDefined('metric', metric);
     mustBeDefined('adapter', adapter);
     mustSatisfy('weight', adapter.isField(weight), () => { return `be a field value`; });
@@ -258,7 +265,7 @@ export function getScalar<T>(weight: T, metric: number | number[] | Metric<T>, a
     return mv<T>([B], metric, adapter);
 }
 
-export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>) {
+function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapter: FieldAdapter<T>) {
     if (!isArray(blades)) {
         throw new Error("blades must be Blade<T>[]");
     }
@@ -309,8 +316,11 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
                 return reverse.divByScalar(denom.scalarCoordinate());
             }
             else {
-                throw new Error("non-invertible multivector (versor inverse)");
+                throw new Error(`non-invertible multivector (versor inverse) ${that}`);
             }
+        },
+        isZero(): boolean {
+            return blades.length === 0;
         },
         mul(rhs: Multivector<T>): Multivector<T> {
             return mul(that, rhs, metric, adapter);
@@ -405,6 +415,14 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
         __pos__(): Multivector<T> {
             return that;
         },
+        neg(): Multivector<T> {
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                rez.push(B.__neg__());
+            }
+            return mv(rez, metric, adapter);
+        },
         __neg__(): Multivector<T> {
             const rez: Blade<T>[] = [];
             for (let i = 0; i < blades.length; i++) {
@@ -423,6 +441,34 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
                 rez.push(B.cliffordConjugate());
             }
             return mv(rez, metric, adapter);
+        },
+        compress(fraction = 1e-12): Multivector<T> {
+            let eps = adapter.mulByNumber(adapter.one, fraction);
+            let max = adapter.zero;
+            // Find the largest blade in absolute terms.
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                max = adapter.max(max, adapter.abs(B.weight));
+            }
+            const cutOff = adapter.mul(max, eps);
+            const rez: Blade<T>[] = [];
+            for (let i = 0; i < blades.length; i++) {
+                const B = blades[i];
+                if (adapter.ge(adapter.abs(B.weight), cutOff)) {
+                    rez.push(B);
+                }
+            }
+            return mv(rez, metric, adapter);
+        },
+        direction(): Multivector<T> {
+            const squaredNorm = that.scp(that.rev());
+            const norm = adapter.sqrt(squaredNorm);
+            if (!adapter.isZero(norm)) {
+                return that.divByScalar(norm);
+            }
+            else {
+                return that;
+            }
         },
         exp(): Multivector<T> {
             // TODO: Optimize and Generalize.
@@ -451,7 +497,7 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
         },
         dual(): Multivector<T> {
             const n = dim(metric);
-            const I = mv([blade((1 << n) - 1, adapter.one(), adapter)], metric, adapter);
+            const I = mv([blade((1 << n) - 1, adapter.one, adapter)], metric, adapter);
             return that.__lshift__(I);
         },
         gradeInversion(): Multivector<T> {
@@ -477,7 +523,7 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
                     return B.weight;
                 }
             }
-            return adapter.zero();
+            return adapter.zero;
         },
         scp(rhs: Multivector<T>): T {
             return that.__vbar__(rhs).scalarCoordinate();
@@ -514,3 +560,53 @@ export default function mv<T>(blades: Blade<T>[], metric: number | number[] | Me
     };
     return that;
 }
+
+export interface Algebra<T> {
+    field: FieldAdapter<T>;
+    one: Multivector<T>;
+    zero: Multivector<T>;
+    /**
+     * Honoring Grassmann, who called the basis vectors "units".
+     */
+    unit(index: number): Multivector<T>;
+}
+
+export function algebra<T>(metric: number | number[] | Metric<T>, field: FieldAdapter<T>, labels?: string[]): Algebra<T> {
+    mustBeDefined('metric', metric);
+    mustBeDefined('field', field);
+
+    const scalarOne = getScalar(field.one, metric, field);
+    const scalarZero = getScalar(field.zero, metric, field);
+
+    /**
+     * A cache of the basis vectors.
+     */
+    const units: Multivector<T>[] = [];
+    const n = dim(metric);
+    for (let i = 0; i < n; i++) {
+        units[i] = getBasisVector(i, metric, field);
+    }
+
+    const that: Algebra<T> = {
+        get field() {
+            return field;
+        },
+        get one() {
+            return scalarOne;
+        },
+        get zero() {
+            return scalarZero;
+        },
+        unit(index: number) {
+            mustBeInteger('index', index);
+            if (index >= 0 && index < n) {
+                return units[index];
+            }
+            else {
+                throw new Error(`index must be in range [1 ... ${n})`);
+            }
+        }
+    };
+    return that;
+}
+

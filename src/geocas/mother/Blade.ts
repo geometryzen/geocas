@@ -42,7 +42,7 @@ export default function blade<T>(b: number, weight: T, adapter: FieldAdapter<T>)
         },
         __vbar__(rhs: Blade<T>, m: number | number[] | Metric<T>): Blade<T> {
             if (b !== rhs.bitmap) {
-                return blade(SCALAR, adapter.zero(), adapter);
+                return blade(SCALAR, adapter.zero, adapter);
             }
             else {
                 return blade(SCALAR, adapter.mul(weight, rhs.weight), adapter);
@@ -51,7 +51,7 @@ export default function blade<T>(b: number, weight: T, adapter: FieldAdapter<T>)
         __wedge__(rhs: Blade<T>): Blade<T> {
             // If there are any vectors in common then the result is zero.
             if (b & rhs.bitmap) {
-                return blade(SCALAR, adapter.zero(), adapter);
+                return blade(SCALAR, adapter.zero, adapter);
             }
             else {
                 const bitmap = b ^ rhs.bitmap;
@@ -79,7 +79,7 @@ export default function blade<T>(b: number, weight: T, adapter: FieldAdapter<T>)
             return blade(b, sign > 0 ? weight : adapter.neg(weight), adapter);
         },
         zero(): Blade<T> {
-            return blade(SCALAR, adapter.zero(), adapter);
+            return blade(SCALAR, adapter.zero, adapter);
         },
         asString(names?: string[]): string {
             let bladePart = "";

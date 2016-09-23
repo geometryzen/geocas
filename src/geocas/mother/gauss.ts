@@ -35,7 +35,7 @@ function makeZeroBelow<T>(A: T[][], i: number, N: number, adapter: FieldAdapter<
         const c = adapter.neg(adapter.div(A[row][i], A[i][i]));
         for (let column = i; column < N + 1; column++) {
             if (i === column) {
-                A[row][column] = adapter.zero();
+                A[row][column] = adapter.zero;
             }
             else {
                 A[row][column] = adapter.add(A[row][column], adapter.mul(c, A[i][column]));
@@ -45,7 +45,7 @@ function makeZeroBelow<T>(A: T[][], i: number, N: number, adapter: FieldAdapter<
 }
 
 function solve<T>(A: T[][], N: number, adapter: FieldAdapter<T>) {
-    const x = makeColumnVector(N, adapter.zero());
+    const x = makeColumnVector(N, adapter.zero);
     for (let i = N - 1; i > -1; i--) {
         x[i] = adapter.div(A[i][N], A[i][i]);
         for (let k = i - 1; k > -1; k--) {

@@ -28,12 +28,14 @@ declare module GeoCAS {
         bitmap: number;
         weight: T;
         __neg__(): Blade<T>;
+        __vbar__(rhs: Blade<T>, m: number | number[] | Metric<T>): Blade<T>;
         __wedge__(rhs: Blade<T>): Blade<T>;
         grade(): number;
         reverse(): Blade<T>;
         gradeInversion(): Blade<T>;
         cliffordConjugate(): Blade<T>;
         zero(): Blade<T>;
+        asString(names?: string[]): string;
     }
 
     interface Metric<T> {
@@ -43,9 +45,18 @@ declare module GeoCAS {
     }
 
     interface FieldAdapter<T> {
+        one: T;
+        zero: T;
+        abs(arg: T): T;
         add(lhs: T, rhs: T): T;
         sub(lhs: T, rhs: T): T;
+        le(lhs: T, rhs: T): boolean;
+        lt(lhs: T, rhs: T): boolean;
+        ge(lhs: T, rhs: T): boolean;
+        gt(lhs: T, rhs: T): boolean;
+        max(lhs: T, rhs: T): T;
         mul(lhs: T, rhs: T): T;
+        mulByNumber(arg: T, alpha: number): T;
         div(lhs: T, rhs: T): T;
         neg(arg: T): T;
         asString(arg: T): string;
@@ -53,20 +64,38 @@ declare module GeoCAS {
         isField(arg: any): arg is T;
         isOne(arg: T): boolean;
         isZero(arg: T): boolean;
-        one(): T;
-        scale(arg: T, alpha: number): T;
         sin(arg: T): T;
         sqrt(arg: T): T;
-        zero(): T;
     }
 
     /**
      * A multivector with a parameterized field type.
      */
     interface Multivector<T> {
+        blades: Blade<T>[];
+        __add__(rhs: Multivector<T>): Multivector<T>;
+        __radd__(rhs: Multivector<T>): Multivector<T>;
+        __sub__(rhs: Multivector<T>): Multivector<T>;
+        __rsub__(rhs: Multivector<T>): Multivector<T>;
+        __mul__(rhs: T | Multivector<T>): Multivector<T>;
+        __rmul__(lhs: T | Multivector<T>): Multivector<T>;
+        __div__(rhs: T | Multivector<T>): Multivector<T>;
+        __lshift__(rhs: Multivector<T>): Multivector<T>;
+        __rshift__(rhs: Multivector<T>): Multivector<T>;
+        __vbar__(rhs: Multivector<T>): Multivector<T>;
+        __wedge__(rhs: Multivector<T>): Multivector<T>;
+        __bang__(): Multivector<T>;
+        __pos__(): Multivector<T>;
+        __neg__(): Multivector<T>;
+        __tilde__(): Multivector<T>;
         add(rhs: Multivector<T>): Multivector<T>;
         asString(names: string[]): string;
         cliffordConjugate(): Multivector<T>;
+        compress(fraction?: number): Multivector<T>;
+        /**
+         * direction(M) = M / sqrt(M * ~M)
+         */
+        direction(): Multivector<T>;
         div(rhs: Multivector<T>): Multivector<T>;
         divByScalar(α: T): Multivector<T>;
         /**
@@ -80,8 +109,10 @@ declare module GeoCAS {
         extractGrade(grade: number): Multivector<T>;
         gradeInversion(): Multivector<T>;
         inv(): Multivector<T>;
+        isZero(): boolean;
         mul(rhs: Multivector<T>): Multivector<T>;
         mulByScalar(α: T): Multivector<T>;
+        neg(): Multivector<T>;
         rev(): Multivector<T>;
         scalarCoordinate(): T;
         /**
@@ -106,22 +137,40 @@ declare module GeoCAS {
      * A ready-made implementation of FieldAdapter<T> with T being a number.
      */
     class NumberFieldAdapter implements FieldAdapter<number> {
+        one: number;
+        zero: number;
+        abs(arg: number): number;
         add(lhs: number, rhs: number): number;
         sub(lhs: number, rhs: number): number;
         mul(lhs: number, rhs: number): number;
+        mulByNumber(arg: number, alpha: number): number;
         div(lhs: number, rhs: number): number;
+        le(lhs: number, rhs: number): boolean;
+        lt(lhs: number, rhs: number): boolean;
+        ge(lhs: number, rhs: number): boolean;
+        gt(lhs: number, rhs: number): boolean;
+        max(lhs: number, rhs: number): number;
         neg(arg: number): number;
         asString(arg: number): string;
         cos(arg: number): number;
         isField(arg: any): arg is number;
         isOne(arg: number): boolean;
         isZero(arg: number): boolean;
-        one(): number;
         scale(arg: number, alpha: number): number;
         sin(arg: number): number;
         sqrt(arg: number): number;
-        zero(): number;
     }
+    interface Algebra<T> {
+        field: FieldAdapter<T>;
+        one: Multivector<T>;
+        zero: Multivector<T>;
+        /**
+         * Honoring Grassmann, who called the basis vectors "units".
+         */
+        unit(index: number): Multivector<T>;
+    }
+
+    function algebra<T>(metric: number | number[] | Metric<T>, field: FieldAdapter<T>, labels?: string[]): Algebra<T>;
 }
 
 declare module 'GeoCAS' {

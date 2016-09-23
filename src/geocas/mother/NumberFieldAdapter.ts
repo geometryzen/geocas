@@ -7,11 +7,29 @@ export default class NumberFieldAdapter implements FieldAdapter<number> {
     add(lhs: number, rhs: number): number {
         return lhs + rhs;
     }
+    le(lhs: number, rhs: number): boolean {
+        return lhs <= rhs;
+    }
+    lt(lhs: number, rhs: number): boolean {
+        return lhs < rhs;
+    }
+    ge(lhs: number, rhs: number): boolean {
+        return lhs >= rhs;
+    }
+    gt(lhs: number, rhs: number): boolean {
+        return lhs > rhs;
+    }
     sub(lhs: number, rhs: number): number {
         return lhs - rhs;
     }
+    max(lhs: number, rhs: number): number {
+        return Math.max(lhs, rhs);
+    }
     mul(lhs: number, rhs: number): number {
         return lhs * rhs;
+    }
+    mulByNumber(arg: number, alpha: number): number {
+        return arg * alpha;
     }
     div(lhs: number, rhs: number): number {
         return lhs / rhs;
@@ -34,11 +52,8 @@ export default class NumberFieldAdapter implements FieldAdapter<number> {
     isZero(arg: number): boolean {
         return arg === 0;
     }
-    one(): number {
+    get one(): number {
         return 1;
-    }
-    scale(arg: number, alpha: number): number {
-        return arg * alpha;
     }
     sin(arg: number): number {
         return Math.sin(arg);
@@ -46,7 +61,7 @@ export default class NumberFieldAdapter implements FieldAdapter<number> {
     sqrt(arg: number): number {
         return Math.sqrt(arg);
     }
-    zero(): number {
+    get zero(): number {
         return 0;
     }
 }

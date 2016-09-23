@@ -1,23 +1,25 @@
-import blade from './Blade';
-import mv from './Multivector';
-import {getBasisVector} from './Multivector';
+import ComplexFieldAdapter from './ComplexFieldAdapter';
+import {algebra} from './Multivector';
 import NumberFieldAdapter from './NumberFieldAdapter';
 import sortBlades from './sortBlades';
 
+const cfa = new ComplexFieldAdapter();
 const nfa = new NumberFieldAdapter();
 
 describe("Multivector", function () {
-    describe("G2", function () {
-        const dim = 2;
-        const one = mv([blade(0, 1, nfa)], dim, nfa);
-        const e1 = getBasisVector(0, dim, nfa);
-        const e2 = getBasisVector(1, dim, nfa);
-        const e12 = e1.__mul__(e2);
+    describe("G2 over number", function () {
+        const G2 = algebra(2, nfa, ['e1', 'e2']);
+        const one = G2.one;
+        const e1 = G2.unit(0);
+        const e2 = G2.unit(1);
+        const e12 = e1.mul(e2);
         it("one", function () {
+            expect(one).toBeDefined();
             expect(one.blades.length).toBe(1);
             expect(one.blades[0].bitmap).toBe(0);
             expect(one.blades[0].weight).toBe(1);
         });
+
         it("e1", function () {
             expect(e1.blades.length).toBe(1);
             expect(e1.blades[0].bitmap).toBe(1);
@@ -879,13 +881,39 @@ describe("Multivector", function () {
                 expect(M.blades[0].weight).toBe(-1);
             });
         });
+        describe("direction", function () {
+            it("1", function () {
+                const M = one.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e1", function () {
+                const M = e1.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e2", function () {
+                const M = e2.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e12", function () {
+                const M = e12.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight).toBe(1);
+            });
+        });
     });
-    describe("G11", function () {
-        const diag = [1, -1];
-        const one = mv([blade(0, 1, nfa)], diag, nfa);
-        const e1 = getBasisVector(0, diag, nfa);
-        const e2 = getBasisVector(1, diag, nfa);
-        const e12 = e1.__mul__(e2);
+    describe("G11 over number", function () {
+        const G11 = algebra([1, -1], nfa);
+        const one = G11.one;
+        const e1 = G11.unit(0);
+        const e2 = G11.unit(1);
+        const e12 = e1.mul(e2);
         it("one", function () {
             expect(one.blades.length).toBe(1);
             expect(one.blades[0].bitmap).toBe(0);
@@ -1752,43 +1780,155 @@ describe("Multivector", function () {
                 expect(M.blades[0].weight).toBe(1);
             });
         });
+        describe("direction", function () {
+            it("1", function () {
+                const M = one.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            it("e1", function () {
+                const M = e1.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            // We can't compute the direction of a vector that squares to -1 when the field
+            // is like the reals and is not closed. May be we should test with complex? 
+            xit("e2", function () {
+                const M = e2.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight).toBe(1);
+            });
+            xit("e12", function () {
+                const M = e12.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight).toBe(1);
+            });
+        });
     });
-    it("one", function () {
-        const one = mv([blade(0, 1, nfa)], 3, nfa);
-        expect(one.blades.length).toBe(1);
-        expect(one.blades[0].bitmap).toBe(0);
-        expect(one.blades[0].weight).toBe(1);
+    describe("G2 over Complex", function () {
+        const G2 = algebra([1, 1], cfa);
+        const one = G2.one;
+        const e1 = G2.unit(0);
+        const e2 = G2.unit(1);
+        const e12 = e1.mul(e2);
+        it("one", function () {
+            expect(one.blades.length).toBe(1);
+            expect(one.blades[0].bitmap).toBe(0);
+            expect(one.blades[0].weight.x).toBe(1);
+            expect(one.blades[0].weight.y).toBe(0);
+        });
+        it("e1", function () {
+            expect(e1.blades.length).toBe(1);
+            expect(e1.blades[0].bitmap).toBe(1);
+            expect(e1.blades[0].weight.x).toBe(1);
+            expect(e1.blades[0].weight.y).toBe(0);
+        });
+        it("e2", function () {
+            expect(e2.blades.length).toBe(1);
+            expect(e2.blades[0].bitmap).toBe(2);
+            expect(e2.blades[0].weight.x).toBe(1);
+            expect(e2.blades[0].weight.y).toBe(0);
+        });
+        it("e12", function () {
+            expect(e12.blades.length).toBe(1);
+            expect(e12.blades[0].bitmap).toBe(3);
+            expect(e12.blades[0].weight.x).toBe(1);
+            expect(e12.blades[0].weight.y).toBe(0);
+        });
+        describe("direction", function () {
+            it("1", function () {
+                const M = one.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight.x).toBe(1);
+                expect(M.blades[0].weight.y).toBe(0);
+            });
+            it("e1", function () {
+                const M = e1.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight.x).toBe(1);
+                expect(M.blades[0].weight.y).toBe(0);
+            });
+            it("e2", function () {
+                const M = e2.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight.x).toBe(1);
+                expect(M.blades[0].weight.y).toBe(0);
+            });
+            it("e12", function () {
+                const M = e12.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight.x).toBe(1);
+                expect(M.blades[0].weight.y).toBe(0);
+            });
+        });
     });
-    it("__add__(scalar, scalar)", function () {
-        const one = mv([blade(0, 5, nfa)], 3, nfa);
-        const two = mv([blade(0, 3, nfa)], 3, nfa);
-        const rez = one.__add__(two);
-        expect(rez.blades.length).toBe(1);
-        if (rez.blades.length === 1) {
-            expect(rez.blades[0].bitmap).toBe(0);
-            expect(rez.blades[0].weight).toBe(8);
-        }
-    });
-    it("__add__(scalar, vector)", function () {
-        const one = mv([blade(0, 5, nfa)], 3, nfa);
-        const two = mv([blade(1, 3, nfa)], 3, nfa);
-        const rez = one.__add__(two);
-        expect(rez.blades.length).toBe(2);
-        if (rez.blades.length === 2) {
-            expect(rez.blades[0].bitmap).toBe(0);
-            expect(rez.blades[0].weight).toBe(5);
-            expect(rez.blades[1].bitmap).toBe(1);
-            expect(rez.blades[1].weight).toBe(3);
-        }
-    });
-    it("__sub__(scalar, scalar)", function () {
-        const one = mv([blade(0, 5, nfa)], 3, nfa);
-        const two = mv([blade(0, 3, nfa)], 3, nfa);
-        const rez = one.__sub__(two);
-        expect(rez.blades.length).toBe(1);
-        if (rez.blades.length === 1) {
-            expect(rez.blades[0].bitmap).toBe(0);
-            expect(rez.blades[0].weight).toBe(2);
-        }
+    describe("G11 over Complex", function () {
+        const G11 = algebra([+1, -1], cfa);
+        const one = G11.one;
+        const e1 = G11.unit(0);
+        const e2 = G11.unit(1);
+        const e12 = e1.mul(e2);
+        it("one", function () {
+            expect(one.blades.length).toBe(1);
+            expect(one.blades[0].bitmap).toBe(0);
+            expect(one.blades[0].weight.x).toBe(1);
+            expect(one.blades[0].weight.y).toBe(0);
+        });
+        it("e1", function () {
+            expect(e1.blades.length).toBe(1);
+            expect(e1.blades[0].bitmap).toBe(1);
+            expect(e1.blades[0].weight.x).toBe(1);
+            expect(e1.blades[0].weight.y).toBe(0);
+        });
+        it("e2", function () {
+            expect(e2.blades.length).toBe(1);
+            expect(e2.blades[0].bitmap).toBe(2);
+            expect(e2.blades[0].weight.x).toBe(1);
+            expect(e2.blades[0].weight.y).toBe(0);
+        });
+        it("e12", function () {
+            expect(e12.blades.length).toBe(1);
+            expect(e12.blades[0].bitmap).toBe(3);
+            expect(e12.blades[0].weight.x).toBe(1);
+            expect(e12.blades[0].weight.y).toBe(0);
+        });
+        describe("direction", function () {
+            it("1", function () {
+                const M = one.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(0);
+                expect(M.blades[0].weight.x).toBe(1);
+                expect(M.blades[0].weight.y).toBe(0);
+            });
+            it("e1", function () {
+                const M = e1.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(1);
+                expect(M.blades[0].weight.x).toBe(1);
+                expect(M.blades[0].weight.y).toBe(0);
+            });
+            it("e2", function () {
+                const M = e2.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(2);
+                expect(M.blades[0].weight.x).toBe(0);
+                expect(M.blades[0].weight.y).toBe(-1);
+            });
+            it("e12", function () {
+                const M = e12.direction();
+                expect(M.blades.length).toBe(1);
+                expect(M.blades[0].bitmap).toBe(3);
+                expect(M.blades[0].weight.x).toBe(0);
+                expect(M.blades[0].weight.y).toBe(-1);
+            });
+        });
     });
 });

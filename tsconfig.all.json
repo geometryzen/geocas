@@ -23,6 +23,7 @@
         "src/geocas/mother/Blade.spec.ts",
         "src/geocas/mother/gauss.spec.ts",
         "src/geocas/mother/Multivector.spec.ts",
+        "src/geocas/mother/orthoFramesToVersor.spec.ts",
         "typings/jasmine/jasmine.d.ts"
     ]
 }

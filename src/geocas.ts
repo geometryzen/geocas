@@ -1,11 +1,13 @@
 // math
-import Algebra from './geocas/math/Algebra';
+// import Algebra from './geocas/math/Algebra';
 import bigInt from './geocas/math/BigInteger';
 import bigRat from './geocas/math/BigRational';
 import blade from './geocas/mother/Blade';
-import mv from './geocas/mother/Multivector';
+import complex from './geocas/mother/Complex';
+import ComplexFieldAdapter from './geocas/mother/ComplexFieldAdapter';
 import NumberFieldAdapter from './geocas/mother/NumberFieldAdapter';
-import {getScalar, getBasisVector} from './geocas/mother/Multivector';
+import orthoFramesToVersor from './geocas/mother/orthoFramesToVersor';
+import {algebra} from './geocas/mother/Multivector';
 import config from './geocas/config';
 
 /**
@@ -22,13 +24,14 @@ const GeoCAS = {
      */
     get VERSION() { return config.VERSION },
 
-    get Algebra() { return Algebra },
+    // get Algebra() { return Algebra },
     get bigInt() { return bigInt },
     get bigRat() { return bigRat },
     get blade() { return blade },
-    get mv() { return mv },
+    get complex() { return complex },
+    get ComplexFieldAdapter() { return ComplexFieldAdapter },
     get NumberFieldAdapter() { return NumberFieldAdapter },
-    get getScalar() { return getScalar },
-    get getBasisVector() { return getBasisVector }
+    get orthoFramesToVersor() { return orthoFramesToVersor },
+    get algebra() { return algebra }
 }
 export default GeoCAS;

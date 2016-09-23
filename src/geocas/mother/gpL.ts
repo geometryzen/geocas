@@ -15,7 +15,7 @@ export default function gpL<T>(a: Blade<T>, b: Blade<T>, m: number[], adapter: F
     let i = 0;
     while (bitmap !== 0) {
         if ((bitmap & 1) !== 0) {
-            weight = adapter.scale(weight, m[i]);
+            weight = adapter.mulByNumber(weight, m[i]);
         }
         i++;
         bitmap = bitmap >> 1;
