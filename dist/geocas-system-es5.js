@@ -3284,7 +3284,7 @@ System.register('geocas/config.js', [], function (exports_1, context_1) {
                     this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
                     this.LAST_MODIFIED = '2016-09-23';
                     this.NAMESPACE = 'GeoCAS';
-                    this.VERSION = '1.8.0';
+                    this.VERSION = '1.9.0';
                 }
                 GeoCAS.prototype.log = function (message) {
                     var optionalParams = [];

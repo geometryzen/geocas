@@ -207,6 +207,59 @@ declare module GeoCAS {
      * squaredNorm(A) = |A|^2 = A | ~A
      */
     function squaredNorm<T>(A: Multivector<T>, B: Multivector<T>): Multivector<T>;
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 
+     */
+    interface Complex {
+        x: number;
+        y: number;
+        __abs__(): Complex;
+        __add__(rhs: Complex): Complex;
+        __sub__(rhs: Complex): Complex;
+        __mul__(rhs: number | Complex): Complex;
+        __div__(rhs: number | Complex): Complex;
+        __neg__(): Complex;
+        toString(): string;
+        __cos__(): Complex;
+        __sin__(): Complex;
+    }
+
+    /**
+     * 
+     */
+    function complex(x: number, y: number): Complex;
+
+    /**
+     * 
+     */
+    class ComplexFieldAdapter implements FieldAdapter<Complex> {
+        one: Complex;
+        zero: Complex;
+        abs(z: Complex): Complex;
+        add(lhs: Complex, rhs: Complex): Complex;
+        eq(lhs: Complex, rhs: Complex): boolean;
+        ne(lhs: Complex, rhs: Complex): boolean;
+        le(lhs: Complex, rhs: Complex): boolean;
+        lt(lhs: Complex, rhs: Complex): boolean;
+        ge(lhs: Complex, rhs: Complex): boolean;
+        gt(lhs: Complex, rhs: Complex): boolean;
+        sub(lhs: Complex, rhs: Complex): Complex;
+        max(lhs: Complex, rhs: Complex): Complex;
+        min(lhs: Complex, rhs: Complex): Complex;
+        mul(lhs: Complex, rhs: Complex): Complex;
+        mulByNumber(arg: Complex, α: number): Complex;
+        div(lhs: Complex, rhs: Complex): Complex;
+        neg(z: Complex): Complex;
+        asString(z: Complex): string;
+        cos(z: Complex): Complex;
+        isField(z: Complex): z is Complex;
+        isOne(z: Complex): boolean;
+        isZero(z: Complex): boolean;
+        sin(z: Complex): Complex;
+        sqrt(z: Complex): Complex;
+    }
 }
 
 declare module 'GeoCAS' {
