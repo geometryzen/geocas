@@ -76,6 +76,7 @@ declare module GeoCAS {
      */
     interface Multivector<T> {
         blades: Blade<T>[];
+        __abs__(): Multivector<T>;
         __add__(rhs: Multivector<T>): Multivector<T>;
         __radd__(rhs: Multivector<T>): Multivector<T>;
         __sub__(rhs: Multivector<T>): Multivector<T>;
@@ -202,11 +203,11 @@ declare module GeoCAS {
     /**
      * norm(A) = |A| = sqrt(A | ~A)
      */
-    function norm<T>(A: Multivector<T>, B: Multivector<T>): Multivector<T>;
+    function norm<T>(A: Multivector<T>): Multivector<T>;
     /**
      * squaredNorm(A) = |A|^2 = A | ~A
      */
-    function squaredNorm<T>(A: Multivector<T>, B: Multivector<T>): Multivector<T>;
+    function squaredNorm<T>(A: Multivector<T>): Multivector<T>;
     //////////////////////////////////////////////////////////////////////////////////////
 
     /**

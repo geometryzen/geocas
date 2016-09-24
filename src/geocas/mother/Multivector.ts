@@ -34,6 +34,7 @@ import FieldAdapter from './FieldAdapter';
 
 export interface Multivector<T> {
     blades: Blade<T>[];
+    __abs__(): Multivector<T>;
     __add__(rhs: Multivector<T>): Multivector<T>;
     __radd__(rhs: Multivector<T>): Multivector<T>;
     __sub__(rhs: Multivector<T>): Multivector<T>;
@@ -291,6 +292,9 @@ function mv<T>(blades: Blade<T>[], metric: number | number[] | Metric<T>, adapte
     const that: Multivector<T> = {
         get blades() {
             return blades;
+        },
+        __abs__(): Multivector<T> {
+            return that.scp(that.rev()).sqrt();
         },
         add(rhs: Multivector<T>): Multivector<T> {
             return add(that, rhs, metric, adapter, labels);
