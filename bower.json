@@ -1,6 +1,6 @@
 {
     "name": "geocas",
-    "version": "1.12.0",
+    "version": "1.13.0",
     "description": "WebGL library for mathematical physics using Geometric Algebra",
     "author": {
         "name": "David Holmes",

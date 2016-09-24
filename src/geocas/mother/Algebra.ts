@@ -16,6 +16,7 @@ import isScalar from './isScalar';
 import isString from '../checks/isString';
 import isUndefined from '../checks/isUndefined';
 import {Metric} from './Multivector';
+import multivectorEQ from './multivectorEQ';
 import multivectorGE from './multivectorGE';
 import multivectorGT from './multivectorGT';
 import multivectorLE from './multivectorLE';
@@ -275,7 +276,7 @@ function mv<T>(blades: Blade<T>[], algebra: Algebra<T>, metric: METRIC<T>, label
             return sub(lhs, that, algebra, metric, labels);
         },
         __eq__(rhs: Multivector<T>): boolean {
-            throw new Error("=== is not implemented");
+            return multivectorEQ(that, rhs, field);
         },
         __ge__(rhs: Multivector<T>): boolean {
             return multivectorGE(that, rhs, field);
@@ -290,7 +291,7 @@ function mv<T>(blades: Blade<T>[], algebra: Algebra<T>, metric: METRIC<T>, label
             return multivectorLT(that, rhs, field);
         },
         __ne__(rhs: Multivector<T>): boolean {
-            throw new Error("!== is not implemented");
+            return !multivectorEQ(that, rhs, field);
         },
         inv(): Multivector<T> {
             // We'll start by trying the versor inverse before doing the general inverse.

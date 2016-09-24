@@ -16,7 +16,6 @@ describe("Multivector", function () {
         it("one should be 1", function () {
             expect(one.toString()).toBe('1');
         });
-
         it("e1 should be i", function () {
             expect(e1.toString()).toBe('i');
         });
@@ -1948,6 +1947,93 @@ describe("Multivector", function () {
                 expect(M.blades[0].bitmap).toBe(3);
                 expect(M.blades[0].weight.x).toBe(0);
                 expect(M.blades[0].weight.y).toBe(-1);
+            });
+        });
+    });
+    describe("Relational", function () {
+        const G2 = algebra(2, nfa, ['i', 'j']);
+        const one = G2.one;
+        const two = G2.one.mulByScalar(2);
+        const e1 = G2.unit(0);
+        const e2 = G2.unit(1);
+        const e12 = e1.mul(e2);
+        const sum = e1.__add__(e2);
+        describe("eq", function () {
+            it("one eq one", function () {
+                expect(one.__eq__(one)).toBeTruthy();
+            });
+            it("one eq two", function () {
+                expect(one.__eq__(two)).toBeFalsy();
+            });
+            it("e1 eq e1", function () {
+                expect(e1.__eq__(e1)).toBeTruthy();
+            });
+            it("e1 eq e2", function () {
+                expect(e1.__eq__(e2)).toBeFalsy();
+            });
+            it("e1 eq sum", function () {
+                expect(e1.__eq__(sum)).toBeFalsy();
+            });
+            it("e12 eq sum", function () {
+                expect(e12.__eq__(sum)).toBeFalsy();
+            });
+        });
+        describe("ge", function () {
+            it("one ge one", function () {
+                expect(one.__ge__(one)).toBeTruthy();
+            });
+            it("one ge two", function () {
+                expect(one.__ge__(two)).toBeFalsy();
+            });
+            it("two ge one", function () {
+                expect(two.__ge__(one)).toBeTruthy();
+            });
+        });
+        describe("gt", function () {
+            it("one gt one", function () {
+                expect(one.__gt__(one)).toBeFalsy();
+            });
+            it("one gt two", function () {
+                expect(one.__gt__(two)).toBeFalsy();
+            });
+            it("two ge one", function () {
+                expect(two.__ge__(one)).toBeTruthy();
+            });
+        });
+        describe("le", function () {
+            it("one le one", function () {
+                expect(one.__le__(one)).toBeTruthy();
+            });
+            it("one le two", function () {
+                expect(one.__le__(two)).toBeTruthy();
+            });
+            it("two le one", function () {
+                expect(two.__le__(one)).toBeFalsy();
+            });
+        });
+        describe("lt", function () {
+            it("one lt one", function () {
+                expect(one.__lt__(one)).toBeFalsy();
+            });
+            it("one lt two", function () {
+                expect(one.__lt__(two)).toBeTruthy();
+            });
+            it("two lt one", function () {
+                expect(two.__lt__(one)).toBeFalsy();
+            });
+        });
+        describe("ne", function () {
+            it("one ne one", function () {
+                expect(one.__ne__(one)).toBeFalsy();
+            });
+            it("one ne two", function () {
+                expect(one.__ne__(two)).toBeTruthy();
+            });
+            it("e1 ne e1", function () {
+                expect(e1.__ne__(e1)).toBeFalsy();
+            });
+            it("e1 ne e2", function () {
+                expect(e1.__ne__(e2)).toBeTruthy();
             });
         });
     });
