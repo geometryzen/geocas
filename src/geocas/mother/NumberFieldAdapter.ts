@@ -1,6 +1,14 @@
 import FieldAdapter from './FieldAdapter';
+import mustBeNumber from '../checks/mustBeNumber';
 
 export default class NumberFieldAdapter implements FieldAdapter<number> {
+    private _ε: number;
+    constructor(ε = 1e-6) {
+        this._ε = mustBeNumber('ε', ε);
+    }
+    get ε() {
+        return this._ε;
+    }
     abs(arg: number): number {
         return Math.abs(arg);
     }

@@ -1,5 +1,5 @@
 import ComplexFieldAdapter from './ComplexFieldAdapter';
-import {algebra} from './Multivector';
+import {algebra} from './Algebra';
 import NumberFieldAdapter from './NumberFieldAdapter';
 import sortBlades from './sortBlades';
 

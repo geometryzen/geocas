@@ -1,4 +1,4 @@
-import {Blade} from './Blade';
+import {Blade} from './Multivector';
 import blade from './Blade';
 import canonicalReorderingSign from './canonicalReorderingSign';
 import FieldAdapter from './FieldAdapter';

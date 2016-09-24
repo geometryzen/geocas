@@ -6,7 +6,7 @@ import orthoFramesToVersor from './orthoFramesToVersor';
 // import complex from './Complex';
 // import ComplexFieldAdapter from './ComplexFieldAdapter';
 // import mv from './Multivector';
-import {algebra} from './Multivector';
+import {algebra} from './Algebra';
 // import sortBlades from './sortBlades';
 
 // const cfa = new ComplexFieldAdapter();

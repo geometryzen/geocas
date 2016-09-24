@@ -1,4 +1,4 @@
-import {Blade} from './Blade';
+import {Blade} from './Multivector';
 
 export default function bladesToArray<T>(map: { [bitmap: number]: Blade<T> }) {
     const bitmaps = Object.keys(map);

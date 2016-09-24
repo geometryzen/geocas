@@ -1,33 +1,15 @@
 import bitCount from './bitCount';
+import {Blade} from './Multivector';
 import canonicalReorderingSign from './canonicalReorderingSign';
 import FieldAdapter from './FieldAdapter';
 import isUndefined from '../checks/isUndefined';
+import {Metric} from './Multivector';
 import minusOnePow from './minusOnePow';
 
 /**
  * The bitmap representation of a scalar.
  */
 const SCALAR = 0;
-
-export interface Metric<T> {
-    toEigenBasis(blade: Blade<T>): Blade<T>[];
-    getEigenMetric(): number[];
-    toMetricBasis(blades: Blade<T>[]): Blade<T>[];
-}
-
-export interface Blade<T> {
-    bitmap: number;
-    weight: T;
-    __neg__(): Blade<T>;
-    __vbar__(rhs: Blade<T>, m: number | number[] | Metric<T>): Blade<T>;
-    __wedge__(rhs: Blade<T>): Blade<T>;
-    grade(): number;
-    reverse(): Blade<T>;
-    gradeInversion(): Blade<T>;
-    cliffordConjugate(): Blade<T>;
-    zero(): Blade<T>;
-    asString(names?: string[]): string;
-}
 
 export default function blade<T>(b: number, weight: T, adapter: FieldAdapter<T>) {
     const that: Blade<T> = {

@@ -19,10 +19,10 @@
         "src/geocas/math/BigInteger.spec.ts",
         "src/geocas/math/BigRational.spec.ts",
         "src/geocas/math/gauss.spec.ts",
+        "src/geocas/mother/Algebra.spec.ts",
         "src/geocas/mother/simplify.spec.ts",
         "src/geocas/mother/Blade.spec.ts",
         "src/geocas/mother/gauss.spec.ts",
-        "src/geocas/mother/Multivector.spec.ts",
         "src/geocas/mother/orthoFramesToVersor.spec.ts",
         "typings/jasmine/jasmine.d.ts"
     ]

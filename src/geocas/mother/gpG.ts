@@ -1,6 +1,6 @@
-import {Blade} from './Blade';
+import {Blade} from './Multivector';
 import gpL from './gpL';
-import {Metric} from './Blade';
+import {Metric} from './Multivector';
 import simplify from './simplify';
 import FieldAdapter from './FieldAdapter';
 

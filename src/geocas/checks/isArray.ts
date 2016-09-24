@@ -1,3 +1,3 @@
-export default function isArray(x: any): x is any[] {
+export default function isArray<T>(x: any): x is T[] {
     return Object.prototype.toString.call(x) === '[object Array]';
 }

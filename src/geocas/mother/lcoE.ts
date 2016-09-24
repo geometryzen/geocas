@@ -1,4 +1,4 @@
-import {Blade} from './Blade';
+import {Blade} from './Multivector';
 import gpE from './gpE';
 import grade from './grade';
 import FieldAdapter from './FieldAdapter';

@@ -9,7 +9,7 @@ import cosineOfAngleBetweenBlades from './geocas/mother/cosineOfAngleBetweenBlad
 import norm from './geocas/mother/norm';
 import NumberFieldAdapter from './geocas/mother/NumberFieldAdapter';
 import orthoFramesToVersor from './geocas/mother/orthoFramesToVersor';
-import {algebra} from './geocas/mother/Multivector';
+import {algebra} from './geocas/mother/Algebra';
 import config from './geocas/config';
 import squaredNorm from './geocas/mother/squaredNorm';
 

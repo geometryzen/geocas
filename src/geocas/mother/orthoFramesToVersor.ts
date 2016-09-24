@@ -1,4 +1,5 @@
-import {Algebra, Multivector} from './Multivector';
+import {Algebra} from './Multivector';
+import {Multivector} from './Multivector';
 import cos from './cosineOfAngleBetweenBlades';
 
 /**

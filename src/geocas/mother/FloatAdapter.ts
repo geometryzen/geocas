@@ -1,7 +1,15 @@
 import FieldAdapter from './FieldAdapter';
 import Float from './Float';
+import mustBeNumber from '../checks/mustBeNumber';
 
 export default class FloatAdapter implements FieldAdapter<Float> {
+    private _ε: Float;
+    constructor(ε = 1e-6) {
+        this._ε = new Float(mustBeNumber('ε', ε));
+    }
+    get ε(): Float {
+        return this._ε;
+    }
     abs(arg: Float): Float {
         return new Float(Math.abs(arg.value));
     }

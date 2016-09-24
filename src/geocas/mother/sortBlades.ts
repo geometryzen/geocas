@@ -1,5 +1,4 @@
-import {Blade} from './Blade';
-// import FieldAdapter from './FieldAdapter';
+import {Blade} from './Multivector';
 
 function compareFn<T>(a: Blade<T>, b: Blade<T>): number {
     if (a.bitmap < b.bitmap) {

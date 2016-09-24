@@ -1,4 +1,4 @@
-import {Blade} from './Blade';
+import {Blade} from './Multivector';
 import blade from './Blade';
 import bladesToArray from './bladesToArray';
 import FieldAdapter from './FieldAdapter';

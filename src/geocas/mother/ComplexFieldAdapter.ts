@@ -2,8 +2,18 @@ import complex from './Complex';
 import {Complex} from './Complex';
 import isNumber from '../checks/isNumber';
 import FieldAdapter from './FieldAdapter';
+import mustBeNumber from '../checks/mustBeNumber';
+
+const ZERO: Complex = complex(0, 0);
 
 export default class ComplexFieldAdapter implements FieldAdapter<Complex> {
+    private _ε: Complex;
+    constructor(ε = 1e-6) {
+        this._ε = complex(mustBeNumber('ε', ε), 0);
+    }
+    get ε(): Complex {
+        return this._ε;
+    }
     abs(z: Complex): Complex {
         return z.__abs__();
     }
@@ -73,7 +83,7 @@ export default class ComplexFieldAdapter implements FieldAdapter<Complex> {
     sqrt(z: Complex): Complex {
         if (z.x === 0) {
             if (z.y === 0) {
-                throw new Error(`TODO: sqrt${z.toString()}`);
+                return ZERO;
             }
             else {
                 throw new Error(`TODO: sqrt${z.toString()}`);
@@ -94,6 +104,6 @@ export default class ComplexFieldAdapter implements FieldAdapter<Complex> {
         }
     }
     get zero(): Complex {
-        return complex(0, 0);
+        return ZERO;
     }
 }

@@ -1,4 +1,5 @@
 interface FieldAdapter<T> {
+    ε: T;
     one: T;
     zero: T;
     abs(arg: T): T;
