@@ -1424,7 +1424,7 @@ export const minusOne = Integer[-1];
 // Integer.min = min;
 // Integer.gcd = gcd;
 // Integer.lcm = lcm;
-export function isInstance(x: any) { return x instanceof BigInteger || x instanceof SmallInteger; };
+export function isInstance(x: any) { return x instanceof BigInteger || x instanceof SmallInteger; }
 // Integer.randBetween = randBetween;
 // return Integer;
 

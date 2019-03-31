@@ -1,15 +1,25 @@
 System.register("geocas/math/BigInteger.js", [], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
-    var __extends = this && this.__extends || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
+    var __extends = this && this.__extends || function () {
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+                d.__proto__ = b;
+            } || function (d, b) {
+                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+            };
+            return extendStatics(d, b);
+        };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() {
+                this.constructor = d;
+            }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    }();
     var BASE, LOG_BASE, MAX_INT, MAX_INT_ARR, LOG_MAX_INT, parseBase, powersOfTwo, powers2Length, highestPower2, Integer, BigInteger, SmallInteger, LOBMASK_I, LOBMASK_BI, i, one, zero, minusOne;
+    var __moduleName = context_1 && context_1.id;
     function isPrecise(n) {
         return -MAX_INT < n && n < MAX_INT;
     }
@@ -958,10 +968,11 @@ System.register("geocas/math/BigInteger.js", [], function (exports_1, context_1)
             BigInteger = function (_super) {
                 __extends(BigInteger, _super);
                 function BigInteger(value, sign) {
-                    _super.call(this, void 0, void 0);
-                    this.value = value;
-                    this.sign = sign;
-                    this.isSmall = false;
+                    var _this = _super.call(this, void 0, void 0) || this;
+                    _this.value = value;
+                    _this.sign = sign;
+                    _this.isSmall = false;
+                    return _this;
                 }
                 BigInteger.prototype.add = function (v) {
                     var n = parseValue(v);
@@ -1158,10 +1169,11 @@ System.register("geocas/math/BigInteger.js", [], function (exports_1, context_1)
             SmallInteger = function (_super) {
                 __extends(SmallInteger, _super);
                 function SmallInteger(value) {
-                    _super.call(this, void 0, void 0);
-                    this.value = value;
-                    this.sign = value < 0;
-                    this.isSmall = true;
+                    var _this = _super.call(this, void 0, void 0) || this;
+                    _this.value = value;
+                    _this.sign = value < 0;
+                    _this.isSmall = true;
+                    return _this;
                 }
                 SmallInteger.prototype.add = function (v) {
                     var n = parseValue(v);
@@ -1338,16 +1350,14 @@ System.register("geocas/math/BigInteger.js", [], function (exports_1, context_1)
             exports_1("one", one = Integer[1]);
             exports_1("zero", zero = Integer[0]);
             exports_1("minusOne", minusOne = Integer[-1]);
-            ;
         }
     };
 });
-System.register("geocas/math/BigRational.js", ['./BigInteger'], function (exports_1, context_1) {
+System.register("geocas/math/BigRational.js", ["./BigInteger"], function (exports_1, context_1) {
     "use strict";
 
+    var BigInteger_1, BigInteger_2, BigRational, zero, one, minusOne;
     var __moduleName = context_1 && context_1.id;
-    var BigInteger_1, BigInteger_2;
-    var BigRational, zero, one, minusOne;
     function reduce(n, d) {
         var divisor = BigInteger_2.gcd(n, d);
         var numer = n.over(divisor);
@@ -1724,11 +1734,11 @@ System.register("geocas/math/BigRational.js", ['./BigInteger'], function (export
         }
     };
 });
-System.register("geocas/mother/Complex.js", ['../checks/isNumber'], function (exports_1, context_1) {
+System.register("geocas/mother/Complex.js", ["../checks/isNumber"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var isNumber_1;
+    var __moduleName = context_1 && context_1.id;
     function complex(x, y) {
         var that = {
             get x() {
@@ -1784,12 +1794,11 @@ System.register("geocas/mother/Complex.js", ['../checks/isNumber'], function (ex
         execute: function () {}
     };
 });
-System.register('geocas/mother/ComplexFieldAdapter.js', ['./Complex', '../checks/isNumber', '../checks/mustBeNumber'], function (exports_1, context_1) {
+System.register("geocas/mother/ComplexFieldAdapter.js", ["./Complex", "../checks/isNumber", "../checks/mustBeNumber"], function (exports_1, context_1) {
     "use strict";
 
+    var Complex_1, isNumber_1, mustBeNumber_1, ZERO, ComplexFieldAdapter;
     var __moduleName = context_1 && context_1.id;
-    var Complex_1, isNumber_1, mustBeNumber_1;
-    var ZERO, ComplexFieldAdapter;
     return {
         setters: [function (Complex_1_1) {
             Complex_1 = Complex_1_1;
@@ -1807,7 +1816,7 @@ System.register('geocas/mother/ComplexFieldAdapter.js', ['./Complex', '../checks
                     }
                     this._ε = Complex_1.default(mustBeNumber_1.default('ε', ε), 0);
                 }
-                Object.defineProperty(ComplexFieldAdapter.prototype, "ε", {
+                Object.defineProperty(ComplexFieldAdapter.prototype, "\u03B5", {
                     get: function () {
                         return this._ε;
                     },
@@ -1916,11 +1925,11 @@ System.register('geocas/mother/ComplexFieldAdapter.js', ['./Complex', '../checks
         }
     };
 });
-System.register('geocas/checks/mustBeNumber.js', ['../checks/mustSatisfy', '../checks/isNumber'], function (exports_1, context_1) {
+System.register("geocas/checks/mustBeNumber.js", ["../checks/mustSatisfy", "../checks/isNumber"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var mustSatisfy_1, isNumber_1;
+    var __moduleName = context_1 && context_1.id;
     function beANumber() {
         return "be a `number`";
     }
@@ -1938,12 +1947,11 @@ System.register('geocas/checks/mustBeNumber.js', ['../checks/mustSatisfy', '../c
         execute: function () {}
     };
 });
-System.register('geocas/mother/NumberFieldAdapter.js', ['../checks/mustBeNumber'], function (exports_1, context_1) {
+System.register("geocas/mother/NumberFieldAdapter.js", ["../checks/mustBeNumber"], function (exports_1, context_1) {
     "use strict";
 
+    var mustBeNumber_1, NumberFieldAdapter;
     var __moduleName = context_1 && context_1.id;
-    var mustBeNumber_1;
-    var NumberFieldAdapter;
     return {
         setters: [function (mustBeNumber_1_1) {
             mustBeNumber_1 = mustBeNumber_1_1;
@@ -1956,7 +1964,7 @@ System.register('geocas/mother/NumberFieldAdapter.js', ['../checks/mustBeNumber'
                     }
                     this._ε = mustBeNumber_1.default('ε', ε);
                 }
-                Object.defineProperty(NumberFieldAdapter.prototype, "ε", {
+                Object.defineProperty(NumberFieldAdapter.prototype, "\u03B5", {
                     get: function () {
                         return this._ε;
                     },
@@ -2049,11 +2057,11 @@ System.register('geocas/mother/NumberFieldAdapter.js', ['../checks/mustBeNumber'
         }
     };
 });
-System.register("geocas/mother/norm.js", ['./squaredNorm'], function (exports_1, context_1) {
+System.register("geocas/mother/norm.js", ["./squaredNorm"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var squaredNorm_1;
+    var __moduleName = context_1 && context_1.id;
     function norm(A) {
         return squaredNorm_1.default(A).sqrt();
     }
@@ -2065,11 +2073,11 @@ System.register("geocas/mother/norm.js", ['./squaredNorm'], function (exports_1,
         execute: function () {}
     };
 });
-System.register("geocas/mother/cosineOfAngleBetweenBlades.js", ['./norm'], function (exports_1, context_1) {
+System.register("geocas/mother/cosineOfAngleBetweenBlades.js", ["./norm"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var norm_1;
+    var __moduleName = context_1 && context_1.id;
     function cos(A, B) {
         var a = norm_1.default(A).scalarCoordinate();
         var b = norm_1.default(B).scalarCoordinate();
@@ -2083,11 +2091,11 @@ System.register("geocas/mother/cosineOfAngleBetweenBlades.js", ['./norm'], funct
         execute: function () {}
     };
 });
-System.register("geocas/mother/orthoFramesToVersor.js", ['./cosineOfAngleBetweenBlades'], function (exports_1, context_1) {
+System.register("geocas/mother/orthoFramesToVersor.js", ["./cosineOfAngleBetweenBlades"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var cosineOfAngleBetweenBlades_1;
+    var __moduleName = context_1 && context_1.id;
     function orthoFramesToVersor(A, B, vs, algebra) {
         if (A.length > 0) {
             var j = bestIndex(A, B, algebra);
@@ -2149,11 +2157,11 @@ System.register("geocas/mother/orthoFramesToVersor.js", ['./cosineOfAngleBetween
         execute: function () {}
     };
 });
-System.register('geocas/mother/lcoE.js', ['./gpE', './grade'], function (exports_1, context_1) {
+System.register("geocas/mother/lcoE.js", ["./gpE", "./grade"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpE_1, grade_1;
+    var __moduleName = context_1 && context_1.id;
     function lcoE(a, b, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2179,11 +2187,11 @@ System.register('geocas/mother/lcoE.js', ['./gpE', './grade'], function (exports
         execute: function () {}
     };
 });
-System.register('geocas/mother/lcoL.js', ['./gpL', './grade'], function (exports_1, context_1) {
+System.register("geocas/mother/lcoL.js", ["./gpL", "./grade"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpL_1, grade_1;
+    var __moduleName = context_1 && context_1.id;
     function lcoL(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2209,11 +2217,11 @@ System.register('geocas/mother/lcoL.js', ['./gpL', './grade'], function (exports
         execute: function () {}
     };
 });
-System.register('geocas/mother/lcoG.js', ['./gpG', './grade'], function (exports_1, context_1) {
+System.register("geocas/mother/lcoG.js", ["./gpG", "./grade"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpG_1, grade_1;
+    var __moduleName = context_1 && context_1.id;
     function lcoG(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2239,11 +2247,11 @@ System.register('geocas/mother/lcoG.js', ['./gpG', './grade'], function (exports
         execute: function () {}
     };
 });
-System.register('geocas/mother/rcoE.js', ['./gpE', './grade'], function (exports_1, context_1) {
+System.register("geocas/mother/rcoE.js", ["./gpE", "./grade"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpE_1, grade_1;
+    var __moduleName = context_1 && context_1.id;
     function rcoE(a, b, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2269,11 +2277,11 @@ System.register('geocas/mother/rcoE.js', ['./gpE', './grade'], function (exports
         execute: function () {}
     };
 });
-System.register('geocas/mother/rcoL.js', ['./gpL', './grade'], function (exports_1, context_1) {
+System.register("geocas/mother/rcoL.js", ["./gpL", "./grade"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpL_1, grade_1;
+    var __moduleName = context_1 && context_1.id;
     function rcoL(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2299,11 +2307,11 @@ System.register('geocas/mother/rcoL.js', ['./gpL', './grade'], function (exports
         execute: function () {}
     };
 });
-System.register('geocas/mother/gpE.js', ['./Blade', './canonicalReorderingSign'], function (exports_1, context_1) {
+System.register("geocas/mother/gpE.js", ["./Blade", "./canonicalReorderingSign"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var Blade_1, canonicalReorderingSign_1;
+    var __moduleName = context_1 && context_1.id;
     function gpE(a, b, adapter) {
         var bitmap = a.bitmap ^ b.bitmap;
         var sign = canonicalReorderingSign_1.default(a.bitmap, b.bitmap);
@@ -2324,11 +2332,11 @@ System.register('geocas/mother/gpE.js', ['./Blade', './canonicalReorderingSign']
         execute: function () {}
     };
 });
-System.register('geocas/mother/gpL.js', ['./Blade', './gpE'], function (exports_1, context_1) {
+System.register("geocas/mother/gpL.js", ["./Blade", "./gpE"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var Blade_1, gpE_1;
+    var __moduleName = context_1 && context_1.id;
     function gpL(a, b, m, adapter) {
         var temp = gpE_1.default(a, b, adapter);
         var weight = temp.weight;
@@ -2353,11 +2361,11 @@ System.register('geocas/mother/gpL.js', ['./Blade', './gpE'], function (exports_
         execute: function () {}
     };
 });
-System.register('geocas/mother/gpG.js', ['./gpL', './simplify'], function (exports_1, context_1) {
+System.register("geocas/mother/gpG.js", ["./gpL", "./simplify"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpL_1, simplify_1;
+    var __moduleName = context_1 && context_1.id;
     function gpG(a, b, m, adapter) {
         var A = m.toEigenBasis(a);
         var B = m.toEigenBasis(b);
@@ -2380,11 +2388,11 @@ System.register('geocas/mother/gpG.js', ['./gpL', './simplify'], function (expor
         execute: function () {}
     };
 });
-System.register("geocas/mother/grade.js", ['./bitCount'], function (exports_1, context_1) {
+System.register("geocas/mother/grade.js", ["./bitCount"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var bitCount_1;
+    var __moduleName = context_1 && context_1.id;
     function grade(bitmap) {
         return bitCount_1.default(bitmap);
     }
@@ -2396,11 +2404,11 @@ System.register("geocas/mother/grade.js", ['./bitCount'], function (exports_1, c
         execute: function () {}
     };
 });
-System.register('geocas/mother/rcoG.js', ['./gpG', './grade'], function (exports_1, context_1) {
+System.register("geocas/mother/rcoG.js", ["./gpG", "./grade"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var gpG_1, grade_1;
+    var __moduleName = context_1 && context_1.id;
     function rcoG(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2480,11 +2488,11 @@ System.register("geocas/mother/sortBlades.js", [], function (exports_1, context_
         execute: function () {}
     };
 });
-System.register("geocas/mother/multivectorEQ.js", ['./sortBlades'], function (exports_1, context_1) {
+System.register("geocas/mother/multivectorEQ.js", ["./sortBlades"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var sortBlades_1;
+    var __moduleName = context_1 && context_1.id;
     function multivectorEQ(lhs, rhs, field) {
         if (lhs.blades.length === rhs.blades.length) {
             var bladesL = sortBlades_1.default(lhs.blades);
@@ -2513,11 +2521,11 @@ System.register("geocas/mother/multivectorEQ.js", ['./sortBlades'], function (ex
         execute: function () {}
     };
 });
-System.register("geocas/mother/multivectorGE.js", ['./isScalar'], function (exports_1, context_1) {
+System.register("geocas/mother/multivectorGE.js", ["./isScalar"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var isScalar_1;
+    var __moduleName = context_1 && context_1.id;
     function multivectorGE(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -2535,11 +2543,11 @@ System.register("geocas/mother/multivectorGE.js", ['./isScalar'], function (expo
         execute: function () {}
     };
 });
-System.register("geocas/mother/multivectorGT.js", ['./isScalar'], function (exports_1, context_1) {
+System.register("geocas/mother/multivectorGT.js", ["./isScalar"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var isScalar_1;
+    var __moduleName = context_1 && context_1.id;
     function multivectorGT(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -2557,11 +2565,11 @@ System.register("geocas/mother/multivectorGT.js", ['./isScalar'], function (expo
         execute: function () {}
     };
 });
-System.register("geocas/mother/multivectorLE.js", ['./isScalar'], function (exports_1, context_1) {
+System.register("geocas/mother/multivectorLE.js", ["./isScalar"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var isScalar_1;
+    var __moduleName = context_1 && context_1.id;
     function multivectorLE(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -2600,11 +2608,11 @@ System.register("geocas/mother/isScalar.js", [], function (exports_1, context_1)
         execute: function () {}
     };
 });
-System.register("geocas/mother/multivectorLT.js", ['./isScalar'], function (exports_1, context_1) {
+System.register("geocas/mother/multivectorLT.js", ["./isScalar"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var isScalar_1;
+    var __moduleName = context_1 && context_1.id;
     function multivectorLT(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -2635,11 +2643,11 @@ System.register("geocas/checks/isDefined.js", [], function (exports_1, context_1
         execute: function () {}
     };
 });
-System.register('geocas/checks/mustBeDefined.js', ['../checks/mustSatisfy', '../checks/isDefined'], function (exports_1, context_1) {
+System.register("geocas/checks/mustBeDefined.js", ["../checks/mustSatisfy", "../checks/isDefined"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var mustSatisfy_1, isDefined_1;
+    var __moduleName = context_1 && context_1.id;
     function beDefined() {
         return "not be 'undefined'";
     }
@@ -2670,11 +2678,11 @@ System.register("geocas/checks/isNumber.js", [], function (exports_1, context_1)
         execute: function () {}
     };
 });
-System.register("geocas/checks/isInteger.js", ['../checks/isNumber'], function (exports_1, context_1) {
+System.register("geocas/checks/isInteger.js", ["../checks/isNumber"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var isNumber_1;
+    var __moduleName = context_1 && context_1.id;
     function isInteger(x) {
         return isNumber_1.default(x) && x % 1 === 0;
     }
@@ -2686,11 +2694,11 @@ System.register("geocas/checks/isInteger.js", ['../checks/isNumber'], function (
         execute: function () {}
     };
 });
-System.register('geocas/checks/mustBeInteger.js', ['../checks/mustSatisfy', '../checks/isInteger'], function (exports_1, context_1) {
+System.register("geocas/checks/mustBeInteger.js", ["../checks/mustSatisfy", "../checks/isInteger"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var mustSatisfy_1, isInteger_1;
+    var __moduleName = context_1 && context_1.id;
     function beAnInteger() {
         return "be an integer";
     }
@@ -2743,11 +2751,11 @@ System.register("geocas/mother/bitCount.js", [], function (exports_1, context_1)
         execute: function () {}
     };
 });
-System.register("geocas/mother/canonicalReorderingSign.js", ['./bitCount'], function (exports_1, context_1) {
+System.register("geocas/mother/canonicalReorderingSign.js", ["./bitCount"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var bitCount_1;
+    var __moduleName = context_1 && context_1.id;
     function canonicalReorderingSign(a, b) {
         a >>= 1;
         var sum = 0;
@@ -2791,12 +2799,11 @@ System.register("geocas/mother/minusOnePow.js", [], function (exports_1, context
         execute: function () {}
     };
 });
-System.register('geocas/mother/Blade.js', ['./bitCount', './canonicalReorderingSign', '../checks/isUndefined', './minusOnePow'], function (exports_1, context_1) {
+System.register("geocas/mother/Blade.js", ["./bitCount", "./canonicalReorderingSign", "../checks/isUndefined", "./minusOnePow"], function (exports_1, context_1) {
     "use strict";
 
+    var bitCount_1, canonicalReorderingSign_1, isUndefined_1, minusOnePow_1, SCALAR;
     var __moduleName = context_1 && context_1.id;
-    var bitCount_1, canonicalReorderingSign_1, isUndefined_1, minusOnePow_1;
-    var SCALAR;
     function blade(b, weight, adapter) {
         var that = {
             get bitmap() {
@@ -2914,11 +2921,11 @@ System.register("geocas/mother/bladesToArray.js", [], function (exports_1, conte
         execute: function () {}
     };
 });
-System.register('geocas/mother/simplify.js', ['./Blade', './bladesToArray'], function (exports_1, context_1) {
+System.register("geocas/mother/simplify.js", ["./Blade", "./bladesToArray"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var Blade_1, bladesToArray_1;
+    var __moduleName = context_1 && context_1.id;
     function simplify(blades, adapter) {
         var map = {};
         for (var i = 0; i < blades.length; i++) {
@@ -2949,11 +2956,11 @@ System.register('geocas/mother/simplify.js', ['./Blade', './bladesToArray'], fun
         execute: function () {}
     };
 });
-System.register('geocas/mother/Algebra.js', ['./Blade', './gpE', './gpL', './gpG', './lcoE', './lcoL', './lcoG', './rcoE', './rcoL', './rcoG', '../checks/isArray', '../checks/isDefined', '../checks/isNumber', './isScalar', '../checks/isString', '../checks/isUndefined', './multivectorEQ', './multivectorGE', './multivectorGT', './multivectorLE', './multivectorLT', '../checks/mustBeDefined', '../checks/mustBeInteger', '../checks/mustSatisfy', './simplify'], function (exports_1, context_1) {
+System.register("geocas/mother/Algebra.js", ["./Blade", "./gpE", "./gpL", "./gpG", "./lcoE", "./lcoL", "./lcoG", "./rcoE", "./rcoL", "./rcoG", "../checks/isArray", "../checks/isDefined", "../checks/isNumber", "./isScalar", "../checks/isString", "../checks/isUndefined", "./multivectorEQ", "./multivectorGE", "./multivectorGT", "./multivectorLE", "./multivectorLT", "../checks/mustBeDefined", "../checks/mustBeInteger", "../checks/mustSatisfy", "./simplify"], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var Blade_1, gpE_1, gpL_1, gpG_1, lcoE_1, lcoL_1, lcoG_1, rcoE_1, rcoL_1, rcoG_1, isArray_1, isDefined_1, isNumber_1, isScalar_1, isString_1, isUndefined_1, multivectorEQ_1, multivectorGE_1, multivectorGT_1, multivectorLE_1, multivectorLT_1, mustBeDefined_1, mustBeInteger_1, mustSatisfy_1, simplify_1;
+    var __moduleName = context_1 && context_1.id;
     function isMultivector(arg) {
         if (arg) {
             return typeof arg['extractGrade'] === 'function';
@@ -3540,17 +3547,18 @@ System.register('geocas/mother/Algebra.js', ['./Blade', './gpE', './gpL', './gpG
 System.register('geocas/config.js', [], function (exports_1, context_1) {
     "use strict";
 
-    var __moduleName = context_1 && context_1.id;
     var GeoCAS, config;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [],
         execute: function () {
             GeoCAS = function () {
                 function GeoCAS() {
                     this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
-                    this.LAST_MODIFIED = '2016-09-24';
+                    this.CREATED_AT = '2016-09-24';
+                    this.MODIFIED_AT = '2019-03-30';
                     this.NAMESPACE = 'GeoCAS';
-                    this.VERSION = '1.13.0';
+                    this.VERSION = '1.13.1';
                 }
                 GeoCAS.prototype.log = function (message) {
                     var optionalParams = [];
@@ -3600,12 +3608,11 @@ System.register("geocas/mother/squaredNorm.js", [], function (exports_1, context
         execute: function () {}
     };
 });
-System.register('geocas.js', ['./geocas/math/BigInteger', './geocas/math/BigRational', './geocas/mother/Blade', './geocas/mother/Complex', './geocas/mother/ComplexFieldAdapter', './geocas/mother/cosineOfAngleBetweenBlades', './geocas/mother/norm', './geocas/mother/NumberFieldAdapter', './geocas/mother/orthoFramesToVersor', './geocas/mother/Algebra', './geocas/config', './geocas/mother/squaredNorm'], function (exports_1, context_1) {
+System.register("geocas.js", ["./geocas/math/BigInteger", "./geocas/math/BigRational", "./geocas/mother/Blade", "./geocas/mother/Complex", "./geocas/mother/ComplexFieldAdapter", "./geocas/mother/cosineOfAngleBetweenBlades", "./geocas/mother/norm", "./geocas/mother/NumberFieldAdapter", "./geocas/mother/orthoFramesToVersor", "./geocas/mother/Algebra", "./geocas/config", "./geocas/mother/squaredNorm"], function (exports_1, context_1) {
     "use strict";
 
+    var BigInteger_1, BigRational_1, Blade_1, Complex_1, ComplexFieldAdapter_1, cosineOfAngleBetweenBlades_1, norm_1, NumberFieldAdapter_1, orthoFramesToVersor_1, Algebra_1, config_1, squaredNorm_1, GeoCAS;
     var __moduleName = context_1 && context_1.id;
-    var BigInteger_1, BigRational_1, Blade_1, Complex_1, ComplexFieldAdapter_1, cosineOfAngleBetweenBlades_1, norm_1, NumberFieldAdapter_1, orthoFramesToVersor_1, Algebra_1, config_1, squaredNorm_1;
-    var GeoCAS;
     return {
         setters: [function (BigInteger_1_1) {
             BigInteger_1 = BigInteger_1_1;
@@ -3635,7 +3642,7 @@ System.register('geocas.js', ['./geocas/math/BigInteger', './geocas/math/BigRati
         execute: function () {
             GeoCAS = {
                 get LAST_MODIFIED() {
-                    return config_1.default.LAST_MODIFIED;
+                    return config_1.default.MODIFIED_AT;
                 },
                 get VERSION() {
                     return config_1.default.VERSION;

@@ -18,6 +18,7 @@ export interface Blade<T> {
     cliffordConjugate(): Blade<T>;
     zero(): Blade<T>;
     asString(names?: string[]): string;
+    toString(): string;
 }
 
 export interface Multivector<T> {
@@ -72,7 +73,7 @@ export interface Multivector<T> {
     rev(): Multivector<T>;
     scalarCoordinate(): T;
     /**
-     * Returns the scalar product of this multivector with rhs, i.e. this | rhs. 
+     * Returns the scalar product of this multivector with rhs, i.e. this | rhs.
      */
     scp(rhs: Multivector<T>): Multivector<T>;
     sqrt(): Multivector<T>;
@@ -91,7 +92,7 @@ export interface Algebra<T> {
      */
     unit(index: number): Multivector<T>;
     /**
-     * 
+     *
      */
     units: Multivector<T>[];
 }

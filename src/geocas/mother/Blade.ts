@@ -1,9 +1,9 @@
 import bitCount from './bitCount';
-import {Blade} from './Multivector';
+import { Blade } from './Multivector';
 import canonicalReorderingSign from './canonicalReorderingSign';
 import FieldAdapter from './FieldAdapter';
 import isUndefined from '../checks/isUndefined';
-import {Metric} from './Multivector';
+import { Metric } from './Multivector';
 import minusOnePow from './minusOnePow';
 
 /**

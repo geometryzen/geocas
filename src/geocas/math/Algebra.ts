@@ -1,4 +1,4 @@
-const wedgeBlades = function(a: number[], b: number[]): number[] {
+const wedgeBlades = function (a: number[], b: number[]): number[] {
     const result: number[] = [];
     const aLen = a.length;
     const bLen = b.length;
@@ -513,7 +513,7 @@ export class RContractExpr extends BinaryExpr {
 
 /**
  * A blade is the outer (wedge) product of a list of vectors.
- * An empty list of vectors corresponds to the unit scalar. 
+ * An empty list of vectors corresponds to the unit scalar.
  */
 export class BasisBladeExpr extends Expr {
     constructor(env: Env, public vectors: number[], public dirty = false) {

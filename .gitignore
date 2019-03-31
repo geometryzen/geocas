@@ -12,3 +12,5 @@ typings/
 _SpecRunner.html
 
 .DS_Store
+.vscode/
+

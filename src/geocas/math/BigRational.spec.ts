@@ -136,7 +136,7 @@ describe("BigRational", function() {
     });
     describe("toDecimal", function() {
         it("Issue #2", function() {
-            expect(bigRat(9, 10).toDecimal()).toBe("0.9"); // Issue #2  
+            expect(bigRat(9, 10).toDecimal()).toBe("0.9"); // Issue #2
         });
         it("Issue #10", function() {
             expect(bigRat("55", "-75").toDecimal() === bigRat("-55", "75").toDecimal()).toBe(true); // Issue #10

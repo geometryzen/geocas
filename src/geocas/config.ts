@@ -1,14 +1,16 @@
 class GeoCAS {
     GITHUB: string;
-    LAST_MODIFIED: string;
+    CREATED_AT: string;
+    MODIFIED_AT: string;
     NAMESPACE: string;
     VERSION: string;
 
     constructor() {
         this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
-        this.LAST_MODIFIED = '2016-09-24';
+        this.CREATED_AT = '2016-09-24';
+        this.MODIFIED_AT = '2019-03-30';
         this.NAMESPACE = 'GeoCAS';
-        this.VERSION = '1.13.0';
+        this.VERSION = '1.13.1';
     }
 
     log(message?: any, ...optionalParams: any[]): void {

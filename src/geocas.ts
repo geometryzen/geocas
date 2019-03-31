@@ -9,7 +9,7 @@ import cosineOfAngleBetweenBlades from './geocas/mother/cosineOfAngleBetweenBlad
 import norm from './geocas/mother/norm';
 import NumberFieldAdapter from './geocas/mother/NumberFieldAdapter';
 import orthoFramesToVersor from './geocas/mother/orthoFramesToVersor';
-import {algebra} from './geocas/mother/Algebra';
+import { algebra } from './geocas/mother/Algebra';
 import config from './geocas/config';
 import squaredNorm from './geocas/mother/squaredNorm';
 
@@ -20,7 +20,7 @@ const GeoCAS = {
     /**
      * The publish date of the latest version of the library.
      */
-    get LAST_MODIFIED() { return config.LAST_MODIFIED; },
+    get LAST_MODIFIED() { return config.MODIFIED_AT; },
 
     /**
      * The semantic version of the library.

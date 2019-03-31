@@ -1,5 +1,5 @@
-import {Algebra} from './Multivector';
-import {Multivector} from './Multivector';
+import { Algebra } from './Multivector';
+import { Multivector } from './Multivector';
 import cos from './cosineOfAngleBetweenBlades';
 
 /**
@@ -8,7 +8,7 @@ import cos from './cosineOfAngleBetweenBlades';
  * A and B are lists of corresponding vectors, representing the frames.
  * A is the start frame, B is the final frame.
  * V should be initialized to 1 in whatever multivector/field flavor you are using.
- * 
+ *
  * This is an application of the Cartan-Dieudonne theorem that states:
  * In n-D, any orthogonal transformation can be represented as at most n planar reflections.
  */

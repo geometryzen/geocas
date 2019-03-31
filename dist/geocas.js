@@ -437,13 +437,22 @@ var requirejs, require, define;
 
 define("../bower_components/almond/almond", function(){});
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('geocas/math/BigInteger',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BASE = 1e7;
     var LOG_BASE = 7;
     var MAX_INT = 9007199254740992;
@@ -778,10 +787,11 @@ define('geocas/math/BigInteger',["require", "exports"], function (require, expor
     var BigInteger = (function (_super) {
         __extends(BigInteger, _super);
         function BigInteger(value, sign) {
-            _super.call(this, void 0, void 0);
-            this.value = value;
-            this.sign = sign;
-            this.isSmall = false;
+            var _this = _super.call(this, void 0, void 0) || this;
+            _this.value = value;
+            _this.sign = sign;
+            _this.isSmall = false;
+            return _this;
         }
         BigInteger.prototype.add = function (v) {
             var n = parseValue(v);
@@ -992,10 +1002,11 @@ define('geocas/math/BigInteger',["require", "exports"], function (require, expor
     var SmallInteger = (function (_super) {
         __extends(SmallInteger, _super);
         function SmallInteger(value) {
-            _super.call(this, void 0, void 0);
-            this.value = value;
-            this.sign = value < 0;
-            this.isSmall = true;
+            var _this = _super.call(this, void 0, void 0) || this;
+            _this.value = value;
+            _this.sign = value < 0;
+            _this.isSmall = true;
+            return _this;
         }
         SmallInteger.prototype.add = function (v) {
             var n = parseValue(v);
@@ -1862,16 +1873,15 @@ define('geocas/math/BigInteger',["require", "exports"], function (require, expor
     exports.minusOne = Integer[-1];
     function isInstance(x) { return x instanceof BigInteger || x instanceof SmallInteger; }
     exports.isInstance = isInstance;
-    ;
     function bigInt(v, radix) {
         return new Integer(v, radix);
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bigInt;
 });
 
-define('geocas/math/BigRational',["require", "exports", './BigInteger', './BigInteger'], function (require, exports, BigInteger_1, BigInteger_2) {
+define('geocas/math/BigRational',["require", "exports", "./BigInteger", "./BigInteger"], function (require, exports, BigInteger_1, BigInteger_2) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BigRational = (function () {
         function BigRational(numer, denom) {
             this.numer = numer;
@@ -2246,7 +2256,6 @@ define('geocas/math/BigRational',["require", "exports", './BigInteger', './BigIn
         }
         return parseDecimal(text);
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bigRat;
     exports.zero = bigRat(0);
     exports.one = bigRat(1);
@@ -2255,6 +2264,7 @@ define('geocas/math/BigRational',["require", "exports", './BigInteger', './BigIn
 
 define('geocas/mother/bitCount',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function bitCount(i) {
         i = i - ((i >> 1) & 0x55555555);
         i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
@@ -2263,12 +2273,12 @@ define('geocas/mother/bitCount',["require", "exports"], function (require, expor
         i = i + (i >> 16);
         return i & 0x0000003F;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bitCount;
 });
 
-define('geocas/mother/canonicalReorderingSign',["require", "exports", './bitCount'], function (require, exports, bitCount_1) {
+define('geocas/mother/canonicalReorderingSign',["require", "exports", "./bitCount"], function (require, exports, bitCount_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function canonicalReorderingSign(a, b) {
         a >>= 1;
         var sum = 0;
@@ -2278,30 +2288,30 @@ define('geocas/mother/canonicalReorderingSign',["require", "exports", './bitCoun
         }
         return ((sum & 1) === 0) ? 1 : -1;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = canonicalReorderingSign;
 });
 
 define('geocas/checks/isUndefined',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isUndefined(arg) {
         return (typeof arg === 'undefined');
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isUndefined;
 });
 
 define('geocas/mother/minusOnePow',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function minusOnePow(i) {
         return ((i & 1) === 0) ? 1 : -1;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = minusOnePow;
 });
 
-define('geocas/mother/Blade',["require", "exports", './bitCount', './canonicalReorderingSign', '../checks/isUndefined', './minusOnePow'], function (require, exports, bitCount_1, canonicalReorderingSign_1, isUndefined_1, minusOnePow_1) {
+define('geocas/mother/Blade',["require", "exports", "./bitCount", "./canonicalReorderingSign", "../checks/isUndefined", "./minusOnePow"], function (require, exports, bitCount_1, canonicalReorderingSign_1, isUndefined_1, minusOnePow_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SCALAR = 0;
     function blade(b, weight, adapter) {
         var that = {
@@ -2390,21 +2400,21 @@ define('geocas/mother/Blade',["require", "exports", './bitCount', './canonicalRe
         };
         return that;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = blade;
 });
 
 define('geocas/checks/isNumber',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isNumber(x) {
         return (typeof x === 'number');
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isNumber;
 });
 
-define('geocas/mother/Complex',["require", "exports", '../checks/isNumber'], function (require, exports, isNumber_1) {
+define('geocas/mother/Complex',["require", "exports", "../checks/isNumber"], function (require, exports, isNumber_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function complex(x, y) {
         var that = {
             get x() {
@@ -2454,12 +2464,12 @@ define('geocas/mother/Complex',["require", "exports", '../checks/isNumber'], fun
         };
         return that;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = complex;
 });
 
 define('geocas/checks/mustSatisfy',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function mustSatisfy(name, condition, messageBuilder, contextBuilder) {
         if (!condition) {
             var message = messageBuilder ? messageBuilder() : "satisfy some condition";
@@ -2467,12 +2477,12 @@ define('geocas/checks/mustSatisfy',["require", "exports"], function (require, ex
             throw new Error(name + " must " + message + context + ".");
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = mustSatisfy;
 });
 
-define('geocas/checks/mustBeNumber',["require", "exports", '../checks/mustSatisfy', '../checks/isNumber'], function (require, exports, mustSatisfy_1, isNumber_1) {
+define('geocas/checks/mustBeNumber',["require", "exports", "../checks/mustSatisfy", "../checks/isNumber"], function (require, exports, mustSatisfy_1, isNumber_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function beANumber() {
         return "be a `number`";
     }
@@ -2480,19 +2490,19 @@ define('geocas/checks/mustBeNumber',["require", "exports", '../checks/mustSatisf
         mustSatisfy_1.default(name, isNumber_1.default(value), beANumber, contextBuilder);
         return value;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = default_1;
 });
 
-define('geocas/mother/ComplexFieldAdapter',["require", "exports", './Complex', '../checks/isNumber', '../checks/mustBeNumber'], function (require, exports, Complex_1, isNumber_1, mustBeNumber_1) {
+define('geocas/mother/ComplexFieldAdapter',["require", "exports", "./Complex", "../checks/isNumber", "../checks/mustBeNumber"], function (require, exports, Complex_1, isNumber_1, mustBeNumber_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ZERO = Complex_1.default(0, 0);
     var ComplexFieldAdapter = (function () {
         function ComplexFieldAdapter(ε) {
             if (ε === void 0) { ε = 1e-6; }
             this._ε = Complex_1.default(mustBeNumber_1.default('ε', ε), 0);
         }
-        Object.defineProperty(ComplexFieldAdapter.prototype, "ε", {
+        Object.defineProperty(ComplexFieldAdapter.prototype, "\u03B5", {
             get: function () {
                 return this._ε;
             },
@@ -2601,47 +2611,47 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", './Complex', '
         });
         return ComplexFieldAdapter;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ComplexFieldAdapter;
 });
 
 define('geocas/mother/squaredNorm',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function squaredNorm(A) {
         return A.scp(A.rev());
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = squaredNorm;
 });
 
-define('geocas/mother/norm',["require", "exports", './squaredNorm'], function (require, exports, squaredNorm_1) {
+define('geocas/mother/norm',["require", "exports", "./squaredNorm"], function (require, exports, squaredNorm_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function norm(A) {
         return squaredNorm_1.default(A).sqrt();
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = norm;
 });
 
-define('geocas/mother/cosineOfAngleBetweenBlades',["require", "exports", './norm'], function (require, exports, norm_1) {
+define('geocas/mother/cosineOfAngleBetweenBlades',["require", "exports", "./norm"], function (require, exports, norm_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function cos(A, B) {
         var a = norm_1.default(A).scalarCoordinate();
         var b = norm_1.default(B).scalarCoordinate();
         return A.scp(B.rev()).divByScalar(a).divByScalar(b);
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = cos;
 });
 
-define('geocas/mother/NumberFieldAdapter',["require", "exports", '../checks/mustBeNumber'], function (require, exports, mustBeNumber_1) {
+define('geocas/mother/NumberFieldAdapter',["require", "exports", "../checks/mustBeNumber"], function (require, exports, mustBeNumber_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var NumberFieldAdapter = (function () {
         function NumberFieldAdapter(ε) {
             if (ε === void 0) { ε = 1e-6; }
             this._ε = mustBeNumber_1.default('ε', ε);
         }
-        Object.defineProperty(NumberFieldAdapter.prototype, "ε", {
+        Object.defineProperty(NumberFieldAdapter.prototype, "\u03B5", {
             get: function () {
                 return this._ε;
             },
@@ -2730,12 +2740,12 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports", '../checks/must
         });
         return NumberFieldAdapter;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NumberFieldAdapter;
 });
 
-define('geocas/mother/orthoFramesToVersor',["require", "exports", './cosineOfAngleBetweenBlades'], function (require, exports, cosineOfAngleBetweenBlades_1) {
+define('geocas/mother/orthoFramesToVersor',["require", "exports", "./cosineOfAngleBetweenBlades"], function (require, exports, cosineOfAngleBetweenBlades_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function orthoFramesToVersor(A, B, vs, algebra) {
         if (A.length > 0) {
             var j = bestIndex(A, B, algebra);
@@ -2759,7 +2769,6 @@ define('geocas/mother/orthoFramesToVersor',["require", "exports", './cosineOfAng
             return vs;
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = orthoFramesToVersor;
     function prepend(xs, x) {
         var result = [];
@@ -2793,8 +2802,9 @@ define('geocas/mother/orthoFramesToVersor',["require", "exports", './cosineOfAng
     }
 });
 
-define('geocas/mother/gpE',["require", "exports", './Blade', './canonicalReorderingSign'], function (require, exports, Blade_1, canonicalReorderingSign_1) {
+define('geocas/mother/gpE',["require", "exports", "./Blade", "./canonicalReorderingSign"], function (require, exports, Blade_1, canonicalReorderingSign_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function gpE(a, b, adapter) {
         var bitmap = a.bitmap ^ b.bitmap;
         var sign = canonicalReorderingSign_1.default(a.bitmap, b.bitmap);
@@ -2806,12 +2816,12 @@ define('geocas/mother/gpE',["require", "exports", './Blade', './canonicalReorder
             return Blade_1.default(bitmap, adapter.neg(scale), adapter);
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = gpE;
 });
 
-define('geocas/mother/gpL',["require", "exports", './Blade', './gpE'], function (require, exports, Blade_1, gpE_1) {
+define('geocas/mother/gpL',["require", "exports", "./Blade", "./gpE"], function (require, exports, Blade_1, gpE_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function gpL(a, b, m, adapter) {
         var temp = gpE_1.default(a, b, adapter);
         var weight = temp.weight;
@@ -2826,12 +2836,12 @@ define('geocas/mother/gpL',["require", "exports", './Blade', './gpE'], function 
         }
         return Blade_1.default(temp.bitmap, weight, adapter);
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = gpL;
 });
 
 define('geocas/mother/bladesToArray',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function bladesToArray(map) {
         var bitmaps = Object.keys(map);
         var rez = [];
@@ -2842,12 +2852,12 @@ define('geocas/mother/bladesToArray',["require", "exports"], function (require, 
         }
         return rez;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bladesToArray;
 });
 
-define('geocas/mother/simplify',["require", "exports", './Blade', './bladesToArray'], function (require, exports, Blade_1, bladesToArray_1) {
+define('geocas/mother/simplify',["require", "exports", "./Blade", "./bladesToArray"], function (require, exports, Blade_1, bladesToArray_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function simplify(blades, adapter) {
         var map = {};
         for (var i = 0; i < blades.length; i++) {
@@ -2870,12 +2880,12 @@ define('geocas/mother/simplify',["require", "exports", './Blade', './bladesToArr
         }
         return bladesToArray_1.default(map);
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = simplify;
 });
 
-define('geocas/mother/gpG',["require", "exports", './gpL', './simplify'], function (require, exports, gpL_1, simplify_1) {
+define('geocas/mother/gpG',["require", "exports", "./gpL", "./simplify"], function (require, exports, gpL_1, simplify_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function gpG(a, b, m, adapter) {
         var A = m.toEigenBasis(a);
         var B = m.toEigenBasis(b);
@@ -2888,21 +2898,21 @@ define('geocas/mother/gpG',["require", "exports", './gpL', './simplify'], functi
         }
         return m.toMetricBasis(simplify_1.default(rez, adapter));
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = gpG;
 });
 
-define('geocas/mother/grade',["require", "exports", './bitCount'], function (require, exports, bitCount_1) {
+define('geocas/mother/grade',["require", "exports", "./bitCount"], function (require, exports, bitCount_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function grade(bitmap) {
         return bitCount_1.default(bitmap);
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = grade;
 });
 
-define('geocas/mother/lcoE',["require", "exports", './gpE', './grade'], function (require, exports, gpE_1, grade_1) {
+define('geocas/mother/lcoE',["require", "exports", "./gpE", "./grade"], function (require, exports, gpE_1, grade_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function lcoE(a, b, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2920,12 +2930,12 @@ define('geocas/mother/lcoE',["require", "exports", './gpE', './grade'], function
             }
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = lcoE;
 });
 
-define('geocas/mother/lcoL',["require", "exports", './gpL', './grade'], function (require, exports, gpL_1, grade_1) {
+define('geocas/mother/lcoL',["require", "exports", "./gpL", "./grade"], function (require, exports, gpL_1, grade_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function lcoL(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2943,12 +2953,12 @@ define('geocas/mother/lcoL',["require", "exports", './gpL', './grade'], function
             }
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = lcoL;
 });
 
-define('geocas/mother/lcoG',["require", "exports", './gpG', './grade'], function (require, exports, gpG_1, grade_1) {
+define('geocas/mother/lcoG',["require", "exports", "./gpG", "./grade"], function (require, exports, gpG_1, grade_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function lcoG(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2966,12 +2976,12 @@ define('geocas/mother/lcoG',["require", "exports", './gpG', './grade'], function
             }
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = lcoG;
 });
 
-define('geocas/mother/rcoE',["require", "exports", './gpE', './grade'], function (require, exports, gpE_1, grade_1) {
+define('geocas/mother/rcoE',["require", "exports", "./gpE", "./grade"], function (require, exports, gpE_1, grade_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function rcoE(a, b, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -2989,12 +2999,12 @@ define('geocas/mother/rcoE',["require", "exports", './gpE', './grade'], function
             }
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = rcoE;
 });
 
-define('geocas/mother/rcoL',["require", "exports", './gpL', './grade'], function (require, exports, gpL_1, grade_1) {
+define('geocas/mother/rcoL',["require", "exports", "./gpL", "./grade"], function (require, exports, gpL_1, grade_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function rcoL(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -3012,12 +3022,12 @@ define('geocas/mother/rcoL',["require", "exports", './gpL', './grade'], function
             }
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = rcoL;
 });
 
-define('geocas/mother/rcoG',["require", "exports", './gpG', './grade'], function (require, exports, gpG_1, grade_1) {
+define('geocas/mother/rcoG',["require", "exports", "./gpG", "./grade"], function (require, exports, gpG_1, grade_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function rcoG(a, b, m, adapter) {
         var ga = a.grade();
         var gb = b.grade();
@@ -3035,30 +3045,30 @@ define('geocas/mother/rcoG',["require", "exports", './gpG', './grade'], function
             }
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = rcoG;
 });
 
 define('geocas/checks/isArray',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isArray(x) {
         return Object.prototype.toString.call(x) === '[object Array]';
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isArray;
 });
 
 define('geocas/checks/isDefined',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isDefined(arg) {
         return (typeof arg !== 'undefined');
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isDefined;
 });
 
 define('geocas/mother/isScalar',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isScalar(arg) {
         var blades = arg.blades;
         var length = blades.length;
@@ -3070,21 +3080,21 @@ define('geocas/mother/isScalar',["require", "exports"], function (require, expor
         }
         return true;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isScalar;
 });
 
 define('geocas/checks/isString',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isString(s) {
         return (typeof s === 'string');
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isString;
 });
 
 define('geocas/mother/sortBlades',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function compareFn(a, b) {
         if (a.bitmap < b.bitmap) {
             return -1;
@@ -3105,12 +3115,12 @@ define('geocas/mother/sortBlades',["require", "exports"], function (require, exp
         rez.sort(compareFn);
         return rez;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = sortBlades;
 });
 
-define('geocas/mother/multivectorEQ',["require", "exports", './sortBlades'], function (require, exports, sortBlades_1) {
+define('geocas/mother/multivectorEQ',["require", "exports", "./sortBlades"], function (require, exports, sortBlades_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function multivectorEQ(lhs, rhs, field) {
         if (lhs.blades.length === rhs.blades.length) {
             var bladesL = sortBlades_1.default(lhs.blades);
@@ -3132,12 +3142,12 @@ define('geocas/mother/multivectorEQ',["require", "exports", './sortBlades'], fun
             return false;
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = multivectorEQ;
 });
 
-define('geocas/mother/multivectorGE',["require", "exports", './isScalar'], function (require, exports, isScalar_1) {
+define('geocas/mother/multivectorGE',["require", "exports", "./isScalar"], function (require, exports, isScalar_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function multivectorGE(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -3148,12 +3158,12 @@ define('geocas/mother/multivectorGE',["require", "exports", './isScalar'], funct
             throw new Error(lhs + " >= " + rhs + " is not implemented.");
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = multivectorGE;
 });
 
-define('geocas/mother/multivectorGT',["require", "exports", './isScalar'], function (require, exports, isScalar_1) {
+define('geocas/mother/multivectorGT',["require", "exports", "./isScalar"], function (require, exports, isScalar_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function multivectorGT(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -3164,12 +3174,12 @@ define('geocas/mother/multivectorGT',["require", "exports", './isScalar'], funct
             throw new Error(lhs + " > " + rhs + " is not implemented.");
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = multivectorGT;
 });
 
-define('geocas/mother/multivectorLE',["require", "exports", './isScalar'], function (require, exports, isScalar_1) {
+define('geocas/mother/multivectorLE',["require", "exports", "./isScalar"], function (require, exports, isScalar_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function multivectorLE(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -3180,12 +3190,12 @@ define('geocas/mother/multivectorLE',["require", "exports", './isScalar'], funct
             throw new Error(lhs + " <= " + rhs + " is not implemented.");
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = multivectorLE;
 });
 
-define('geocas/mother/multivectorLT',["require", "exports", './isScalar'], function (require, exports, isScalar_1) {
+define('geocas/mother/multivectorLT',["require", "exports", "./isScalar"], function (require, exports, isScalar_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function multivectorLT(lhs, rhs, field) {
         if (isScalar_1.default(lhs) && isScalar_1.default(rhs)) {
             var l = lhs.scalarCoordinate();
@@ -3196,12 +3206,12 @@ define('geocas/mother/multivectorLT',["require", "exports", './isScalar'], funct
             throw new Error(lhs + " < " + rhs + " is not implemented.");
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = multivectorLT;
 });
 
-define('geocas/checks/mustBeDefined',["require", "exports", '../checks/mustSatisfy', '../checks/isDefined'], function (require, exports, mustSatisfy_1, isDefined_1) {
+define('geocas/checks/mustBeDefined',["require", "exports", "../checks/mustSatisfy", "../checks/isDefined"], function (require, exports, mustSatisfy_1, isDefined_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function beDefined() {
         return "not be 'undefined'";
     }
@@ -3209,21 +3219,21 @@ define('geocas/checks/mustBeDefined',["require", "exports", '../checks/mustSatis
         mustSatisfy_1.default(name, isDefined_1.default(value), beDefined, contextBuilder);
         return value;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = mustBeDefined;
 });
 
-define('geocas/checks/isInteger',["require", "exports", '../checks/isNumber'], function (require, exports, isNumber_1) {
+define('geocas/checks/isInteger',["require", "exports", "../checks/isNumber"], function (require, exports, isNumber_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isInteger(x) {
         return isNumber_1.default(x) && x % 1 === 0;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = isInteger;
 });
 
-define('geocas/checks/mustBeInteger',["require", "exports", '../checks/mustSatisfy', '../checks/isInteger'], function (require, exports, mustSatisfy_1, isInteger_1) {
+define('geocas/checks/mustBeInteger',["require", "exports", "../checks/mustSatisfy", "../checks/isInteger"], function (require, exports, mustSatisfy_1, isInteger_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function beAnInteger() {
         return "be an integer";
     }
@@ -3231,12 +3241,12 @@ define('geocas/checks/mustBeInteger',["require", "exports", '../checks/mustSatis
         mustSatisfy_1.default(name, isInteger_1.default(value), beAnInteger, contextBuilder);
         return value;
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = mustBeInteger;
 });
 
-define('geocas/mother/Algebra',["require", "exports", './Blade', './gpE', './gpL', './gpG', './lcoE', './lcoL', './lcoG', './rcoE', './rcoL', './rcoG', '../checks/isArray', '../checks/isDefined', '../checks/isNumber', './isScalar', '../checks/isString', '../checks/isUndefined', './multivectorEQ', './multivectorGE', './multivectorGT', './multivectorLE', './multivectorLT', '../checks/mustBeDefined', '../checks/mustBeInteger', '../checks/mustSatisfy', './simplify'], function (require, exports, Blade_1, gpE_1, gpL_1, gpG_1, lcoE_1, lcoL_1, lcoG_1, rcoE_1, rcoL_1, rcoG_1, isArray_1, isDefined_1, isNumber_1, isScalar_1, isString_1, isUndefined_1, multivectorEQ_1, multivectorGE_1, multivectorGT_1, multivectorLE_1, multivectorLT_1, mustBeDefined_1, mustBeInteger_1, mustSatisfy_1, simplify_1) {
+define('geocas/mother/Algebra',["require", "exports", "./Blade", "./gpE", "./gpL", "./gpG", "./lcoE", "./lcoL", "./lcoG", "./rcoE", "./rcoL", "./rcoG", "../checks/isArray", "../checks/isDefined", "../checks/isNumber", "./isScalar", "../checks/isString", "../checks/isUndefined", "./multivectorEQ", "./multivectorGE", "./multivectorGT", "./multivectorLE", "./multivectorLT", "../checks/mustBeDefined", "../checks/mustBeInteger", "../checks/mustSatisfy", "./simplify"], function (require, exports, Blade_1, gpE_1, gpL_1, gpG_1, lcoE_1, lcoL_1, lcoG_1, rcoE_1, rcoL_1, rcoG_1, isArray_1, isDefined_1, isNumber_1, isScalar_1, isString_1, isUndefined_1, multivectorEQ_1, multivectorGE_1, multivectorGT_1, multivectorLE_1, multivectorLT_1, mustBeDefined_1, mustBeInteger_1, mustSatisfy_1, simplify_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isMultivector(arg) {
         if (arg) {
             return typeof arg['extractGrade'] === 'function';
@@ -3795,12 +3805,14 @@ define('geocas/mother/Algebra',["require", "exports", './Blade', './gpE', './gpL
 
 define('geocas/config',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var GeoCAS = (function () {
         function GeoCAS() {
             this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
-            this.LAST_MODIFIED = '2016-09-24';
+            this.CREATED_AT = '2016-09-24';
+            this.MODIFIED_AT = '2019-03-30';
             this.NAMESPACE = 'GeoCAS';
-            this.VERSION = '1.13.0';
+            this.VERSION = '1.13.1';
         }
         GeoCAS.prototype.log = function (message) {
             var optionalParams = [];
@@ -3833,14 +3845,14 @@ define('geocas/config',["require", "exports"], function (require, exports) {
         return GeoCAS;
     }());
     var config = new GeoCAS();
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = config;
 });
 
-define('geocas',["require", "exports", './geocas/math/BigInteger', './geocas/math/BigRational', './geocas/mother/Blade', './geocas/mother/Complex', './geocas/mother/ComplexFieldAdapter', './geocas/mother/cosineOfAngleBetweenBlades', './geocas/mother/norm', './geocas/mother/NumberFieldAdapter', './geocas/mother/orthoFramesToVersor', './geocas/mother/Algebra', './geocas/config', './geocas/mother/squaredNorm'], function (require, exports, BigInteger_1, BigRational_1, Blade_1, Complex_1, ComplexFieldAdapter_1, cosineOfAngleBetweenBlades_1, norm_1, NumberFieldAdapter_1, orthoFramesToVersor_1, Algebra_1, config_1, squaredNorm_1) {
+define('geocas',["require", "exports", "./geocas/math/BigInteger", "./geocas/math/BigRational", "./geocas/mother/Blade", "./geocas/mother/Complex", "./geocas/mother/ComplexFieldAdapter", "./geocas/mother/cosineOfAngleBetweenBlades", "./geocas/mother/norm", "./geocas/mother/NumberFieldAdapter", "./geocas/mother/orthoFramesToVersor", "./geocas/mother/Algebra", "./geocas/config", "./geocas/mother/squaredNorm"], function (require, exports, BigInteger_1, BigRational_1, Blade_1, Complex_1, ComplexFieldAdapter_1, cosineOfAngleBetweenBlades_1, norm_1, NumberFieldAdapter_1, orthoFramesToVersor_1, Algebra_1, config_1, squaredNorm_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var GeoCAS = {
-        get LAST_MODIFIED() { return config_1.default.LAST_MODIFIED; },
+        get LAST_MODIFIED() { return config_1.default.MODIFIED_AT; },
         get VERSION() { return config_1.default.VERSION; },
         get bigInt() { return BigInteger_1.default; },
         get bigRat() { return BigRational_1.default; },
@@ -3854,7 +3866,6 @@ define('geocas',["require", "exports", './geocas/math/BigInteger', './geocas/mat
         get algebra() { return Algebra_1.algebra; },
         get squaredNorm() { return squaredNorm_1.default; }
     };
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = GeoCAS;
 });
 

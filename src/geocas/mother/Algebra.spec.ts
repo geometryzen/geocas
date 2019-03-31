@@ -1,5 +1,5 @@
 import ComplexFieldAdapter from './ComplexFieldAdapter';
-import {algebra} from './Algebra';
+import { algebra } from './Algebra';
 import NumberFieldAdapter from './NumberFieldAdapter';
 import sortBlades from './sortBlades';
 
@@ -1813,7 +1813,7 @@ describe("Multivector", function () {
                 expect(M.blades[0].weight).toBe(1);
             });
             // We can't compute the direction of a vector that squares to -1 when the field
-            // is like the reals and is not closed. May be we should test with complex? 
+            // is like the reals and is not closed. May be we should test with complex?
             xit("e2", function () {
                 const M = e2.direction();
                 expect(M.blades.length).toBe(1);

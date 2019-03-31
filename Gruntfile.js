@@ -322,5 +322,5 @@ module.exports = function (grunt) {
     //
     grunt.registerTask('amd', ['ts:amdES5', 'requirejs']);
 
-    grunt.registerTask('default', ['clean', 'amd', 'system', 'tslint', 'uglify', 'copy:main', 'copy:all', 'typedoc']);
+    grunt.registerTask('default', ['clean', 'amd', 'system', 'tslint', 'uglify', 'copy:main', 'copy:all'/*, 'typedoc'*/]);
 };
