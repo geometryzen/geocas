@@ -1,7 +1,4 @@
 // math
-// import Algebra from './geocas/math/Algebra';
-import bigInt from './geocas/math/BigInteger';
-import bigRat from './geocas/math/BigRational';
 import blade from './geocas/mother/Blade';
 import complex from './geocas/mother/Complex';
 import ComplexFieldAdapter from './geocas/mother/ComplexFieldAdapter';
@@ -27,9 +24,6 @@ const GeoCAS = {
      */
     get VERSION() { return config.VERSION; },
 
-    // get Algebra() { return Algebra },
-    get bigInt() { return bigInt; },
-    get bigRat() { return bigRat; },
     get blade() { return blade; },
     get complex() { return complex; },
     get ComplexFieldAdapter() { return ComplexFieldAdapter; },
