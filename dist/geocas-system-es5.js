@@ -84,7 +84,7 @@ System.register("geocas/mother/ComplexFieldAdapter.js", ["./Complex", "../checks
                     get: function () {
                         return this._ε;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 ComplexFieldAdapter.prototype.abs = function (z) {
@@ -151,7 +151,7 @@ System.register("geocas/mother/ComplexFieldAdapter.js", ["./Complex", "../checks
                     get: function () {
                         return Complex_1.default(1, 0);
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 ComplexFieldAdapter.prototype.sin = function (z) {
@@ -180,7 +180,7 @@ System.register("geocas/mother/ComplexFieldAdapter.js", ["./Complex", "../checks
                     get: function () {
                         return ZERO;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return ComplexFieldAdapter;
@@ -232,7 +232,7 @@ System.register("geocas/mother/NumberFieldAdapter.js", ["../checks/mustBeNumber"
                     get: function () {
                         return this._ε;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 NumberFieldAdapter.prototype.abs = function (arg) {
@@ -299,7 +299,7 @@ System.register("geocas/mother/NumberFieldAdapter.js", ["../checks/mustBeNumber"
                     get: function () {
                         return 1;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 NumberFieldAdapter.prototype.sin = function (arg) {
@@ -312,7 +312,7 @@ System.register("geocas/mother/NumberFieldAdapter.js", ["../checks/mustBeNumber"
                     get: function () {
                         return 0;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return NumberFieldAdapter;

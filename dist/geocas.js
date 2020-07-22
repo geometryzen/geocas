@@ -681,7 +681,7 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", "./Complex", "
             get: function () {
                 return this._ε;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         ComplexFieldAdapter.prototype.abs = function (z) {
@@ -748,7 +748,7 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", "./Complex", "
             get: function () {
                 return Complex_1.default(1, 0);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         ComplexFieldAdapter.prototype.sin = function (z) {
@@ -781,7 +781,7 @@ define('geocas/mother/ComplexFieldAdapter',["require", "exports", "./Complex", "
             get: function () {
                 return ZERO;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return ComplexFieldAdapter;
@@ -830,7 +830,7 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports", "../checks/must
             get: function () {
                 return this._ε;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         NumberFieldAdapter.prototype.abs = function (arg) {
@@ -897,7 +897,7 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports", "../checks/must
             get: function () {
                 return 1;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         NumberFieldAdapter.prototype.sin = function (arg) {
@@ -910,7 +910,7 @@ define('geocas/mother/NumberFieldAdapter',["require", "exports", "../checks/must
             get: function () {
                 return 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return NumberFieldAdapter;
@@ -1422,6 +1422,7 @@ define('geocas/checks/mustBeInteger',["require", "exports", "../checks/mustSatis
 define('geocas/mother/Algebra',["require", "exports", "./Blade", "./gpE", "./gpL", "./gpG", "./lcoE", "./lcoL", "./lcoG", "./rcoE", "./rcoL", "./rcoG", "../checks/isArray", "../checks/isDefined", "../checks/isNumber", "./isScalar", "../checks/isString", "../checks/isUndefined", "./multivectorEQ", "./multivectorGE", "./multivectorGT", "./multivectorLE", "./multivectorLT", "../checks/mustBeDefined", "../checks/mustBeInteger", "../checks/mustSatisfy", "./simplify"], function (require, exports, Blade_1, gpE_1, gpL_1, gpG_1, lcoE_1, lcoL_1, lcoG_1, rcoE_1, rcoL_1, rcoG_1, isArray_1, isDefined_1, isNumber_1, isScalar_1, isString_1, isUndefined_1, multivectorEQ_1, multivectorGE_1, multivectorGT_1, multivectorLE_1, multivectorLT_1, mustBeDefined_1, mustBeInteger_1, mustSatisfy_1, simplify_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.algebra = void 0;
     function isMultivector(arg) {
         if (arg) {
             return typeof arg['extractGrade'] === 'function';
