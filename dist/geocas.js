@@ -1986,9 +1986,9 @@ define('geocas/config',["require", "exports"], function (require, exports) {
         function GeoCAS() {
             this.GITHUB = 'https://github.com/geometryzen/GeoCAS';
             this.CREATED_AT = '2016-09-24';
-            this.MODIFIED_AT = '2019-03-30';
+            this.MODIFIED_AT = '2020-07-22';
             this.NAMESPACE = 'GeoCAS';
-            this.VERSION = '1.13.1';
+            this.VERSION = '1.13.2';
         }
         GeoCAS.prototype.log = function (message) {
             var optionalParams = [];
