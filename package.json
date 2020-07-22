@@ -1,13 +1,14 @@
 {
   "name": "geocas",
-  "version": "1.13.2",
-  "description": "WebGL library for mathematical physics using Geometric Algebra",
+  "version": "2.0.0",
+  "description": "Geometric Algebra library for Mathematical Physics",
   "author": {
     "name": "David Holmes",
     "email": "david.geo.holmes@gmail.com"
   },
-  "main": "./dist/geocas.js",
-  "typings": "./dist/geocas.d.ts",
+  "browser": "./build/browser/index.js",
+  "module": "./build/module/index.js",
+  "types": "./build/browser/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git://github.com/geometryzen/GeoCAS.git"
@@ -23,62 +24,67 @@
     }
   ],
   "scripts": {
-    "test": "grunt; grunt test"
+    "info": "npm-scripts-info",
+    "build": "trash build && tsc -p tsconfig.module.json && npm run build:browser",
+    "build:browser": "rollup --config rollup.config.js && cp src/index.d.ts build/browser",
+    "lint": "clear && tslint src/**/*.ts && tslint src/lib/**/*.ts",
+    "unit": "trash test && tsc -p tsconfig.test.json && karma start",
+    "test": "npm run lint && npm run unit && nyc check-coverage --lines 40 --functions 30 --branches 20",
+    "watch": "concurrently -r --kill-others 'tsc -p tsconfig.test.json -w' 'sleepms 2000 && jasmine-node test --autotest --watch test'",
+    "coverage": "trash test && tsc -p tsconfig.test.json && nyc karma start && nyc report --reporter=html && open-cli coverage/index.html",
+    "docs": "npm run docs:typedoc && open-cli docs/index.html",
+    "docs:typedoc": "trash docs && typedoc --options typedoc.json",
+    "pages": "npm run docs:typedoc && gh-pages -d docs",
+    "changelog": "standard-version"
   },
-  "dependencies": {
-    "tsd": "^0.7.4"
+  "scripts-info": {
+    "info": "Displays information about the scripts.",
+    "build": "Build the package.",
+    "test": "Run the tests.",
+    "docs": "Generate documentation.",
+    "pages": "Publish documentation as GitHub pages.",
+    "watch": "Watch codebase, trigger build when source code changes."
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^3.1.1",
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
     "@types/jasmine": "^3.5.11",
+    "@types/node": "^14.0.23",
+    "browserify": "^16.5.1",
+    "codecov": "^3.7.1",
+    "concurrently": "^5.2.0",
+    "cpx": "^1.5.0",
     "es6-module-loader": "^0.17.11",
-    "grunt": "^1.2.1",
-    "grunt-cli": "^1.3.2",
-    "grunt-complexity": "^1.0.1",
-    "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-connect": "^1.0.2",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jasmine": "^1.0.3",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-requirejs": "^1.0.0",
-    "grunt-contrib-uglify": "^1.0.2",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-contrib-yuidoc": "^1.0.0",
-    "grunt-exec": "^1.0.1",
-    "grunt-jasmine-task": "0.2.3",
-    "grunt-karma": "^2.0.0",
-    "grunt-template-jasmine-requirejs": "^0.2.3",
-    "grunt-ts": "^5.5.1",
-    "grunt-tslint": "^5.0.2",
-    "grunt-typedoc": "^0.2.4",
-    "grunt-typescript": "^0.8.0",
-    "jasmine-core": "^2.5.2",
-    "jspm": "^0.16.55",
-    "karma": "^0.13.10",
-    "karma-chrome-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.5",
-    "karma-phantomjs-launcher": "^0.2.1",
-    "karma-systemjs": "^0.8.0",
-    "phantomjs": "^1.9.18",
-    "phantomjs-polyfill": "^0.0.1",
-    "q": "1.4.1",
-    "requirejs": "~2.2.0",
-    "servedir": "^1.0.0",
-    "systemjs": "^0.19.38",
-    "systemjs-builder": "^0.15.31",
-    "tslint": "^5.20.1",
-    "typedoc": "^0.14.2",
+    "gh-pages": "^3.1.0",
+    "hash.js": "^1.1.7",
+    "jasmine-core": "^3.5.0",
+    "jasmine-node": "^3.0.0",
+    "karma": "^5.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-coverage": "^2.0.2",
+    "karma-jasmine": "^3.3.1",
+    "karma-jasmine-html-reporter": "^1.5.4",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-systemjs": "^0.16.0",
+    "mkdirp": "^1.0.4",
+    "npm-scripts-info": "^0.3.9",
+    "nyc": "^15.1.0",
+    "open-cli": "^6.0.1",
+    "phantomjs-polyfill": "^0.0.2",
+    "rollup": "^2.22.1",
+    "rollup-watch": "^4.3.1",
+    "sleep-ms": "^2.0.1",
+    "sorcery": "^0.10.0",
+    "standard-version": "^8.0.2",
+    "systemjs": "^0.19.41",
+    "trash-cli": "^3.0.0",
+    "tslint": "^6.1.2",
+    "typedoc": "^0.17.8",
     "typescript": "^3.9.7"
   },
-  "keywords": [],
-  "jspm": {
-    "dependencies": {
-      "ts": "github:frankwallis/plugin-typescript@^2.6.0"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.8.38",
-      "babel-runtime": "npm:babel-runtime@^5.8.38",
-      "core-js": "npm:core-js@^1.2.7",
-      "typescript": "npm:typescript@^3.4.3"
-    }
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }

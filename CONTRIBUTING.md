@@ -1,46 +1,53 @@
 ## Contributing
 
+### Prerequisites
+
+npm install --global gh-pages
+npm install --global jasmine-node
+npm install --global karma-cli
+npm install --global npm-scripts-info
+npm install --global nyc
+npm install --global open-cli
+npm install --global trash-cli
+npm install --global typedoc
+npm install --global rollup
+npm install --global sleep-ms
+npm install --global sorcery
+
 ### Building
 
 Open a terminal window.
 
 Clone the GeoCAS repo:
-```
+
+```bash
 git clone git://github.com/geometryzen/GeoCAS.git
 ```
 
 Change to the repo directory:
-```
+
+```bash
 cd GeoCAS
 ```
 
 Install NPM:
-```
+
+```bash
 npm install
+npm update
 ```
 to install the tooling dependencies (For this you need to have [Node.js](http://nodejs.org) installed).
 
-Install Bower:
-```
-bower install
-```
-to install the software dependencies (For this you need to have [Bower](http://bower.io) installed).
+Beware: Upgrading from 5.5.1 to 5.6.0 is problematic on Fedora (2018-01-19).
 
-Install JSPM:
+```bash
+npm run build
+npm run lint
+npm run test
+npm run docs
+npm run pages
 ```
-jspm install
-```
-to install JSPM, used for testing.
 
-Install TypeScript definitions:
-```
-tsd install
-```
-to install TypeScript definitions for Jasmine used in testing.
-
-```
-grunt
-```
 to compile the source using the TypeScript compiler (For this you need to have [TypeScript](http://www.typescriptlang.org) installed) and to package the individual files into a single JavaScript file.
 
 ## Making Changes
@@ -49,17 +56,23 @@ Make your changes to the TypeScript files in the _src_ directory. Do not edit th
 
 ## Testing
 
+```bash
+npm run test
+```
+
 ## Versioning
 
+The following files should be changed.
+
 ```
-src/geocas/config.ts
 package.json
-bower.json
+src/lib/config.ts
+src/index.d.ts
 ```
 
 ## Git
 
-```
+```bash
 git add --all
 git commit -m '...'
 git tag -a 1.2.3 -m '...'

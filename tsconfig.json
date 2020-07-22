@@ -1,29 +1,33 @@
 {
     "compilerOptions": {
-        "module": "system",
-        "target": "ES5",
-        "outDir": "test/system",
-        "noImplicitAny": false,
-        "noLib": false,
-        "removeComments": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "moduleResolution": "classic",
-        "sourceMap": false,
+        "target": "es5",
+        "outDir": "test",
+        "rootDir": "src",
+        "moduleResolution": "node",
+        "declaration": false,
+        "importHelpers": true,
         "inlineSourceMap": false,
-        "inlineSources": false,
-        "noImplicitReturns": true
+        "listFiles": false,
+        "traceResolution": false,
+        "pretty": true,
+        "strictNullChecks": false,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": [
+            "es2015",
+            "dom"
+        ]
     },
-    "files": [
-        "src/geocas/checks/isNull.spec.ts",
-        "src/geocas/math/Algebra.spec.ts",
-        "src/geocas/math/BigInteger.spec.ts",
-        "src/geocas/math/BigRational.spec.ts",
-        "src/geocas/math/gauss.spec.ts",
-        "src/geocas/mother/Algebra.spec.ts",
-        "src/geocas/mother/simplify.spec.ts",
-        "src/geocas/mother/Blade.spec.ts",
-        "src/geocas/mother/gauss.spec.ts",
-        "src/geocas/mother/orthoFramesToVersor.spec.ts",
-        "typings/jasmine/jasmine.d.ts"
-    ]
+    "include": [
+        "src/**/*.ts"
+    ],
+    "compileOnSave": false
 }

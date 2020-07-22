@@ -1,0 +1,31 @@
+import FieldAdapter from './FieldAdapter';
+import Float from './Float';
+export default class FloatAdapter implements FieldAdapter<Float> {
+    private _ε;
+    constructor(ε?: number);
+    get ε(): Float;
+    abs(arg: Float): Float;
+    add(lhs: Float, rhs: Float): Float;
+    sub(lhs: Float, rhs: Float): Float;
+    eq(lhs: Float, rhs: Float): boolean;
+    ne(lhs: Float, rhs: Float): boolean;
+    le(lhs: Float, rhs: Float): boolean;
+    lt(lhs: Float, rhs: Float): boolean;
+    ge(lhs: Float, rhs: Float): boolean;
+    gt(lhs: Float, rhs: Float): boolean;
+    max(lhs: Float, rhs: Float): Float;
+    min(lhs: Float, rhs: Float): Float;
+    mul(lhs: Float, rhs: Float): Float;
+    mulByNumber(arg: Float, multiplier: number): Float;
+    div(lhs: Float, rhs: Float): Float;
+    neg(arg: Float): Float;
+    asString(arg: Float): string;
+    cos(arg: Float): Float;
+    isField(arg: any): arg is Float;
+    isOne(arg: any): boolean;
+    isZero(arg: any): boolean;
+    get one(): Float;
+    sin(arg: Float): Float;
+    sqrt(arg: Float): Float;
+    get zero(): Float;
+}

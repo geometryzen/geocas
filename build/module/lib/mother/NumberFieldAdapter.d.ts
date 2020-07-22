@@ -1,0 +1,30 @@
+import FieldAdapter from './FieldAdapter';
+export default class NumberFieldAdapter implements FieldAdapter<number> {
+    private _ε;
+    constructor(ε?: number);
+    get ε(): number;
+    abs(arg: number): number;
+    add(lhs: number, rhs: number): number;
+    eq(lhs: number, rhs: number): boolean;
+    ne(lhs: number, rhs: number): boolean;
+    le(lhs: number, rhs: number): boolean;
+    lt(lhs: number, rhs: number): boolean;
+    ge(lhs: number, rhs: number): boolean;
+    gt(lhs: number, rhs: number): boolean;
+    sub(lhs: number, rhs: number): number;
+    max(lhs: number, rhs: number): number;
+    min(lhs: number, rhs: number): number;
+    mul(lhs: number, rhs: number): number;
+    mulByNumber(arg: number, alpha: number): number;
+    div(lhs: number, rhs: number): number;
+    neg(arg: number): number;
+    asString(arg: number): string;
+    cos(arg: number): number;
+    isField(arg: any): arg is number;
+    isOne(arg: number): boolean;
+    isZero(arg: number): boolean;
+    get one(): number;
+    sin(arg: number): number;
+    sqrt(arg: number): number;
+    get zero(): number;
+}
