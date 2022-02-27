@@ -1,5 +1,7 @@
 amd/
 bower_components/
+build/
+docs/
 documentation/
 jspm_packages/
 node_modules/
