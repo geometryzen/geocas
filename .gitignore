@@ -1,6 +1,7 @@
 amd/
 bower_components/
 build/
+coverage/
 docs/
 documentation/
 jspm_packages/

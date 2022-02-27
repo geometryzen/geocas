@@ -1,33 +1,38 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "outDir": "test",
-        "rootDir": "src",
+        "outDir": "dist",
         "moduleResolution": "node",
-        "declaration": false,
+        "module": "esnext",
         "importHelpers": true,
         "inlineSourceMap": false,
         "listFiles": false,
         "traceResolution": false,
         "pretty": true,
-        "strictNullChecks": false,
+        "strictNullChecks": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true,
-        "suppressImplicitAnyIndexErrors": true,
+        "suppressImplicitAnyIndexErrors": false,
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": false,
+        "noUnusedParameters": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "lib": [
             "es2015",
             "dom"
-        ]
+        ],
+        "declaration": true,
+        "declarationDir": "types",
+        "emitDeclarationOnly": true
     },
     "include": [
         "src/**/*.ts"
+, "test/mother/Blade.spec.ts", "test/mother/simplify.spec.ts", "test/mother/orthoFramesToVersor.spec.ts"    ],
+    "exclude": [
+        "src/**/*.spec.ts"
     ],
     "compileOnSave": false
 }
