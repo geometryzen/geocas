@@ -6,7 +6,7 @@ var GeoCAS = /** @class */ (function () {
         this.CREATED_AT = '2016-09-24';
         this.MODIFIED_AT = '2020-07-22';
         this.NAMESPACE = 'GeoCAS';
-        this.VERSION = '1.13.2';
+        this.VERSION = '2.0.0';
     }
     GeoCAS.prototype.log = function (message) {
         var optionalParams = [];
